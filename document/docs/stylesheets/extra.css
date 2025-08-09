@@ -1,0 +1,5 @@
+.md-header__topic > .md-ellipsis {
+    overflow: visible;
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+}
