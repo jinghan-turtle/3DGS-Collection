@@ -1,4 +1,7 @@
-site_name: Over-The-Air | Can Data Analysis
+site_name: 3DGS based SLAM | Material Collation
+repo_name: jinghan-turtle/Gaussian-Splatting-based-SLAM-Resource
+repo_url: https://github.com/jinghan-turtle/Gaussian-Splatting-based-SLAM-Resource
+
 theme:
   name: 'material'
 
@@ -30,13 +33,15 @@ theme:
     - content.code.annotate
 
   palette: 
-    primary: yellow
+    primary: lime
 
   plugins:
     - search
 
 nav:
   - Background: index.md
+  - 3DGS: 
+    - 3D Gaussian Splatting: 3DGS/3DGS.md
   - Decode:
     - Overview: decode/Overview.md
     - Details:
@@ -86,3 +91,7 @@ markdown_extensions:
 
 extra_css:
   - stylesheets/extra.css
+
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML
