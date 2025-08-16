@@ -8,7 +8,7 @@
 
 $$
 \small
-G(x;\mu,\Sigma) = \cfrac{1}{\sqrt{(2\pi)^k|\Sigma|}}exp\bigg(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\bigg) = \cfrac{1}{\sqrt{(2\pi)^k|\Sigma|}}\exp\Bigg(-\frac{1}{2}\bigg(\frac{(x-\mu_1)^2}{\sigma_1^2}+\frac{(y-\mu_2)^2}{\sigma_2^2}+\frac{(z-\mu_3)^2}{\sigma_3^2}-\frac{2\sigma_{xy}(x-\mu_1)(y-\mu_2)}{\sigma_1\sigma_2}-\frac{2\sigma_{xz}(x-\mu_1)(z-\mu_3)}{\sigma_1\sigma_3}-\frac{2\sigma_{yz}(y-\mu_2)(z-\mu_3)}{\sigma_2\sigma_3}\bigg)\Bigg)
+G(x;\mu,\Sigma) = \cfrac{1}{\sqrt{(2\pi)^k|\Sigma|}}\exp\bigg(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\bigg) = \cfrac{1}{\sqrt{(2\pi)^k|\Sigma|}}\exp\Bigg(-\frac{1}{2}\bigg(\frac{(x-\mu_1)^2}{\sigma_1^2}+\frac{(y-\mu_2)^2}{\sigma_2^2}+\frac{(z-\mu_3)^2}{\sigma_3^2}-\frac{2\sigma_{xy}(x-\mu_1)(y-\mu_2)}{\sigma_1\sigma_2}-\frac{2\sigma_{xz}(x-\mu_1)(z-\mu_3)}{\sigma_1\sigma_3}-\frac{2\sigma_{yz}(y-\mu_2)(z-\mu_3)}{\sigma_2\sigma_3}\bigg)\Bigg)
 $$
 
 同时，任意椭球都可以由某个椭球通过通过仿射变换得到，而其中仿射变换左乘的矩阵 $\small A$可以视为旋转和缩放这两个作用的合成，即 $\small A=RS$：

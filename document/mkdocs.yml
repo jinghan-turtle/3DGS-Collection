@@ -49,9 +49,11 @@ theme:
   plugins:
     - tags
     - search
+    - glightbox
+    - git-revision-date-localized:
+      enable_creation_date: true
+      type: timeago
 
-  # icon:
-  #   repo: fontawesome/brands/github
 
 
 nav:
@@ -107,6 +109,7 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
 
+
 extra:
   generator: false
   homepage: https://jinghan-turtle.github.io/3DGS-Collection/
@@ -134,8 +137,14 @@ extra:
           note: >- 
             Thanks for your feedback!
 
+
 extra_css:
   - stylesheets/extra.css
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.css
+
 
 extra_javascript:
+  - javascripts/katex.js 
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.js  
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/contrib/auto-render.min.js
   - https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML
