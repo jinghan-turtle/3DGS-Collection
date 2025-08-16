@@ -1,15 +1,13 @@
-site_name: 3DGS based SLAM | Material Collation
-repo_name: jinghan-turtle/Gaussian-Splatting-based-SLAM-Resource
-repo_url: https://github.com/jinghan-turtle/Gaussian-Splatting-based-SLAM-Resource
+site_name: 3DGS based SLAM | Material Collection
+copyright: Copyright &copy; 2025 JinghanCai with all rights reserved
 
 theme:
-  name: 'material'
+  name: material
+  logo: assets/3D-Gaussians.png
+  favicon: assets/3D-Gaussians.png
 
   font:
     text: Noto Serif SC
-
-  icon:
-    logo: material/github
 
   language: zh
 
@@ -32,8 +30,20 @@ theme:
     - content.action.view
     - content.code.annotate
 
-  palette: 
-    primary: lime
+  palette:
+    - scheme: default
+      primary: blue grey
+      
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+
+    - scheme: slate
+      primary: blue grey
+      
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
 
   plugins:
     - search
@@ -89,9 +99,41 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
 
+extra:
+  generator: false
+  homepage: https://herointene.github.io
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/jinghan-turtle
+      name: Github
+    # - icon: fontawesome/brands/instagram
+    #   link: https://www.instagram.com/tedilitarianism/
+    #   name: Instagram
+    # - icon: fontawesome/brands/soundcloud
+    #   link: https://soundcloud.com/wulited
+    #   name: SoundCloud
+    - icon: fontawesome/solid/paper-plane
+      link: mailto:<caijinghan@sjtu.edu.cn>
+      name: Email me
+  analytics:
+    provider: google
+    property: G-NSSC5W311R
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/emoticon-happy-outline
+          name: This page was helpful
+          data: 1
+          note: >-
+            Thanks for your feedback!
+        - icon: material/emoticon-sad-outline
+          name: This page could be improved
+          data: 0
+          note: >- 
+            Thanks for your feedback!
+
 extra_css:
   - stylesheets/extra.css
-
 
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML
