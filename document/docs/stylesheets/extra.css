@@ -1,5 +1,10 @@
-.md-header__topic > .md-ellipsis {
-    overflow: visible;
-    text-overflow: ellipsis; 
-    white-space: nowrap; 
+[data-md-color-scheme="jinghan-color-light"] {
+    --md-primary-fg-color: #E5E2B9;  /* The background color of the top bar or header */
+    --md-primary-bg-color: #404040;  /* The font color of the top bar or header */
+    
+    --md-footer-bg-color: #F3EEEA;  /* The background color of the bottom bar or footer */
+    --md-footer-fg-color: #606060;  /* The font color of the bottom bar or footer */
+
+    --md-footer-bg-color--dark: var(--md-primary-fg-color);  /* The background color of the last or end footer */
+    --md-footer-fg-color--light: #404040;  /* The font color of the last or end footer */
 }

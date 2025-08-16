@@ -1,14 +1,17 @@
 site_name: 3DGS based SLAM | Material Collection
-copyright: Copyright &copy; 2025 JinghanCai with all rights reserved
+repo_url: https://github.com/jinghan-turtle/3DGS-Collection
+repo_name: 3DGS-Collection
+copyright: Copyright &copy; 2025 jinghan-turtle with all rights reserved
+
 
 theme:
   name: material
+  custom_dir: overrides
   logo: assets/3D-Gaussians.png
   favicon: assets/3D-Gaussians.png
 
   font:
     text: Noto Serif SC
-
   language: zh
 
   features:
@@ -31,22 +34,25 @@ theme:
     - content.code.annotate
 
   palette:
-    - scheme: default
-      primary: blue grey
-      
+    - media: "(prefers-color-scheme: light)"
+      scheme: jinghan-color-light
       toggle:
         icon: material/weather-sunny
         name: Switch to dark mode
 
-    - scheme: slate
-      primary: blue grey
-      
+    - media: "(prefers-color-scheme: dark)"
+      scheme: jinghan-color-light
       toggle:
         icon: material/weather-night
         name: Switch to light mode
 
   plugins:
+    - tags
     - search
+
+  # icon:
+  #   repo: fontawesome/brands/github
+
 
 nav:
   - Background: index.md
@@ -57,6 +63,7 @@ nav:
     - Details:
       - Class Encapsulation: decode/Details/Class_Encapsulation.md
       - Can Data Analysis: decode/Details/Can_Data_Analysis.md
+
 
 # 详见https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown-extensions/
 # https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown/
@@ -85,6 +92,7 @@ markdown_extensions:
             !!python/name:pymdownx.superfences.fence_code_format  # 代码块高亮插件
   - pymdownx.arithmatex:    # latex支持
       generic: true
+  - tables
   - toc:
       permalink: true       # 固定标题位置为当前位置
   - pymdownx.highlight:     # 代码块高亮
@@ -101,17 +109,11 @@ markdown_extensions:
 
 extra:
   generator: false
-  homepage: https://herointene.github.io
+  homepage: https://jinghan-turtle.github.io/3DGS-Collection/
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/jinghan-turtle
       name: Github
-    # - icon: fontawesome/brands/instagram
-    #   link: https://www.instagram.com/tedilitarianism/
-    #   name: Instagram
-    # - icon: fontawesome/brands/soundcloud
-    #   link: https://soundcloud.com/wulited
-    #   name: SoundCloud
     - icon: fontawesome/solid/paper-plane
       link: mailto:<caijinghan@sjtu.edu.cn>
       name: Email me
