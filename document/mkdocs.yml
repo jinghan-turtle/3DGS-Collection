@@ -1,6 +1,6 @@
 site_name: 3DGS based SLAM | Material Collection
-repo_url: https://github.com/jinghan-turtle/3DGS-Collection
-repo_name: 3DGS-Collection
+# repo_url: https://github.com/jinghan-turtle/3DGS-Collection
+# repo_name: 3DGS-Collection
 copyright: Copyright &copy; 2025 jinghan-turtle with all rights reserved
 
 
@@ -29,22 +29,20 @@ theme:
     - content.tabs.link
     - content.tooltips
     - content.code.copy
-    - content.action.edit
-    - content.action.view
     - content.code.annotate
 
   palette:
     - media: "(prefers-color-scheme: light)"
-      scheme: jinghan-color-light
-      toggle:
-        icon: material/weather-sunny
-        name: Switch to dark mode
+      scheme: Morandi-light
+      # toggle:
+      #   icon: material/weather-sunny
+      #   name: Switch to dark mode
 
-    - media: "(prefers-color-scheme: dark)"
-      scheme: jinghan-color-light
-      toggle:
-        icon: material/weather-night
-        name: Switch to light mode
+    # - media: "(prefers-color-scheme: dark)"
+    #   scheme: Morandi-light
+    #   toggle:
+    #     icon: material/weather-night
+    #     name: Switch to light mode
 
   plugins:
     - tags
@@ -115,7 +113,7 @@ extra:
   homepage: https://jinghan-turtle.github.io/3DGS-Collection/
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/jinghan-turtle
+      link: https://github.com/jinghan-turtle/3DGS-Collection
       name: Github
     - icon: fontawesome/solid/paper-plane
       link: mailto:<caijinghan@sjtu.edu.cn>
@@ -140,11 +138,7 @@ extra:
 
 extra_css:
   - stylesheets/extra.css
-  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.css
 
 
 extra_javascript:
-  - javascripts/katex.js 
-  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.js  
-  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/contrib/auto-render.min.js
   - https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML

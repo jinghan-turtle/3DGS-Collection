@@ -18,11 +18,9 @@ $$
 w = Ax+b = RSx+b,\thinspace x\sim N(\mu,\Sigma) \thinspace\thinspace\Longrightarrow\thinspace\thinspace w\sim N(A\mu+b, A\Sigma A^T) = N(A\mu+b, RS\Sigma S^TR^T)
 $$
 
-特别地，当 $\small x$ 服从标准正态分布时，仿射变换得到的协方差矩阵为 $\small RSS^TR^T$；反过来，给定协方差矩阵 $\small\Sigma$，我们可以通过特征值分解得到 $\small R$ 和 $\small S$，即 $\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T$。
+特别地，当 $\small x$ 服从标准正态分布时，仿射变换得到的协方差矩阵为 $\small RSS^TR^T$；反过来，给定协方差矩阵 $\small\Sigma$，我们可以通过特征值分解得到 $\small R$ 和 $\small S$，即 $\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T$。代码 `forward.cu` 中的 `computeCov3D` 函数讲的就是这个仿射变换，`scale` 即为上述 $x$， `float* cov3D` 则用以存储协方差矩阵，只是传入的 `glm:vec4 rot4` 四元数使得代码多了一个计算旋转矩阵的过程。
 
-??? Quote "仿射变换对应的 `computeCov3D` 函数代码"
-    代码 `forward.cu` 中的 `computeCov3D` 函数讲的就是这个仿射变换，`scale` 即为上述 $x$， `float* cov3D` 则用以存储协方差矩阵，只是传入的 `glm:vec4 rot4` 四元数使得代码多了一个计算旋转矩阵的过程。
-
+=== "C++"
     ```C++ hl_lines="26 27 28 29"
     // Forward method for converting scale and rotation properties of each
     // Gaussian to a 3D covariance matrix in world space. Also takes care
@@ -63,6 +61,48 @@ $$
         cov3D[5] = Sigma[2][2];
     }
     ```
+=== "Python"
+    ```C++ hl_lines="26 27 28 29"
+    // Forward method for converting scale and rotation properties of each
+    // Gaussian to a 3D covariance matrix in world space. Also takes care
+    // of quaternion normalization.
+    __device__ void computeCov3D(const glm::vec3 scale, float mod, const glm::vec4 rot, float* cov3D)
+    {
+        // Create scaling matrix
+        glm::mat3 S = glm::mat3(1.0f);
+        S[0][0] = mod * scale.x;
+        S[1][1] = mod * scale.y;
+        S[2][2] = mod * scale.z;
+
+        // Normalize quaternion to get valid rotation
+        glm::vec4 q = rot;// / glm::length(rot);
+        float r = q.x;
+        float x = q.y;
+        float y = q.z;
+        float z = q.w;
+
+        // Compute rotation matrix from quaternion
+        glm::mat3 R = glm::mat3(
+            1.f - 2.f * (y * y + z * z), 2.f * (x * y - r * z), 2.f * (x * z + r * y),
+            2.f * (x * y + r * z), 1.f - 2.f * (x * x + z * z), 2.f * (y * z - r * x),
+            2.f * (x * z - r * y), 2.f * (y * z + r * x), 1.f - 2.f * (x * x + y * y)
+        );
+
+        glm::mat3 M = S * R;
+
+        // Compute 3D world covariance matrix Sigma
+        glm::mat3 Sigma = glm::transpose(M) * M;
+
+        // Covariance is symmetric, only store upper right
+        cov3D[0] = Sigma[0][0];
+        cov3D[1] = Sigma[0][1];
+        cov3D[2] = Sigma[0][2];
+        cov3D[3] = Sigma[1][1];
+        cov3D[4] = Sigma[1][2];
+        cov3D[5] = Sigma[2][2];
+    }
+    ```
+
 
 ## 抛雪球：为透视变换引入雅可比
 
@@ -119,7 +159,6 @@ __device__ float3 computeCov2D(const float3& mean, float focal_x, float focal_y,
 2. 自适应密度控制与优化: 对透明的高斯分布作周期性滤除. 同时, 对于under-reconstruction的欠重建区域, 克隆高斯并沿着梯度方向移动以覆盖几何体; 对于over-reconstruction的过重建区域则拆分高斯以更好地拟合细粒度细节.
 
 3. 快速光栅化: 3D高斯的轴向积分等同于2D高斯, 这从数学层面摆脱了采样量的限制, 计算量由高斯数量决定, 而高斯又可以使用光栅化管线快速并行渲染.
-
 
 
 <div id="refer-anchor-1"></div>

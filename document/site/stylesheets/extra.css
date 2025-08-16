@@ -1,10 +1,28 @@
-[data-md-color-scheme="jinghan-color-light"] {
+[data-md-color-scheme="Morandi-light"] {
     --md-primary-fg-color: #E5E2B9;  /* The background color of the top bar or header */
     --md-primary-bg-color: #404040;  /* The font color of the top bar or header */
     
     --md-footer-bg-color: #F3EEEA;  /* The background color of the bottom bar or footer */
     --md-footer-fg-color: #606060;  /* The font color of the bottom bar or footer */
 
-    --md-footer-bg-color--dark: var(--md-primary-fg-color);  /* The background color of the last or end footer */
+    --md-footer-bg-color--dark: #E5E2B9;  /* The background color of the last or end footer */
     --md-footer-fg-color--light: #404040;  /* The font color of the last or end footer */
+
+    --md-typeset-a-color: #9a7549;  /* the highlight color of font */
+    --md-accent-fg-color: #91a0a5;  /* the color of link while activated */
+}
+
+/* 修改所有代码字体大小 */
+.md-typeset code {
+    font-size: .70rem;
+}
+
+/* (覆盖)修改行内代码字体大小 */
+.md-typeset code:not(pre code) {
+    font-size: inherit;
+}
+
+/* 修改代码块行间距 */
+.md-typeset pre {
+    line-height: 1.7;
 }
