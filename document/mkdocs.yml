@@ -5,52 +5,34 @@ copyright: Copyright &copy; 2025 jinghan-turtle with all rights reserved
 
 
 theme:
+  language: zh
   name: material
   custom_dir: overrides
   logo: assets/3D-Gaussians.png
   favicon: assets/3D-Gaussians.png
 
-  font:
-    text: Noto Serif SC
-  language: zh
-
   features:
-    - announce.dismiss       # 呈现可标记为由用户读取的临时公告，可以包含一个用于取消当前公告的按钮
-    - navigation.tracking    # 地址栏中的 URL 将自动更新为在目录中突出显示的活动锚点
-    - navigation.tabs        # 顶级部分将呈现在上面视口标题下方的菜单层中，但在移动设备上保持原样
-    - navigation.sections    # 启用部分后，顶级部分在边栏中呈现为1220px以上视口的组，但在移动设备上保持原样
-    - navigation.top         # 返回顶部的按钮 在上滑时出现
-    - navigation.footer      # 页脚将呈现在边栏中，但在移动设备上保持原样
-    - search.suggest         # 搜索输入一些字母时推荐补全整个单词
-    - search.highlight       # 搜索出的文章关键词加入高亮
-    - search.share           # 搜索分享按钮
-    - navigation.expand      # 打开Tab时左侧目录全部展开
-    - navigation.indexes     # 启用节索引页后，可以将文档直接附加到节
-    - content.tabs.link
+    - announce.dismiss
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - navigation.tabs
+    - navigation.sections
+    - navigation.footer
+    - navigation.expand
+    - navigation.path
+    - navigation.indexes
     - content.tooltips
+    - content.tabs.link
     - content.code.copy
+    - content.code.select
     - content.code.annotate
+    - toc.follow
+    - toc.integrate
 
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: Morandi-light
-    #   toggle:
-    #     icon: material/weather-sunny
-    #     name: Switch to dark mode
-
-    # - media: "(prefers-color-scheme: dark)"
-    #   scheme: Morandi-light
-    #   toggle:
-    #     icon: material/weather-night
-    #     name: Switch to light mode
-
-  plugins:
-    - tags
-    - search
-    - glightbox
-    - git-revision-date-localized:
-      enable_creation_date: true
-      type: timeago
 
 
 nav:
@@ -87,11 +69,16 @@ markdown_extensions:
           class: mermaid
           format:
             !!python/name:pymdownx.superfences.fence_code_format  # 代码块高亮插件
+      preserve_tabs: true
   - pymdownx.arithmatex:    # latex支持
       generic: true
   - tables
   - toc:
-      permalink: true       # 固定标题位置为当前位置
+      permalink: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+      toc_depth: 3
   - pymdownx.highlight:     # 代码块高亮
       anchor_linenums: true
       linenums: false       # 显示行号
@@ -135,6 +122,8 @@ extra:
 
 extra_css:
   - stylesheets/extra.css
+  - https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap
+  - https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@450&display=swap
 
 
 extra_javascript:
