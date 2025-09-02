@@ -1,6 +1,6 @@
 site_name: 3DGS based SLAM | Material Collection
-# repo_url: https://github.com/jinghan-turtle/3DGS-Collection
-# repo_name: 3DGS-Collection
+repo_url: https://github.com/jinghan-turtle/3DGS-Collection
+repo_name: 3DGS-Collection
 copyright: Copyright &copy; 2025 jinghan-turtle with all rights reserved
 
 
@@ -34,9 +34,9 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: Morandi-light
-      # toggle:
-      #   icon: material/weather-sunny
-      #   name: Switch to dark mode
+    #   toggle:
+    #     icon: material/weather-sunny
+    #     name: Switch to dark mode
 
     # - media: "(prefers-color-scheme: dark)"
     #   scheme: Morandi-light
@@ -53,7 +53,6 @@ theme:
       type: timeago
 
 
-
 nav:
   - Background: index.md
   - 3DGS: 
@@ -65,8 +64,6 @@ nav:
       - Can Data Analysis: decode/Details/Can_Data_Analysis.md
 
 
-# 详见https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown-extensions/
-# https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown/
 markdown_extensions: 
   - abbr
   - attr_list
