@@ -484,19 +484,19 @@
 
 
 <h1 id="3d-gaussian-splatting">3D Gaussian Splatting<a class="headerlink" href="#3d-gaussian-splatting" title="Permanent link">&para;</a></h1>
-<p>3DGS 是基于 Splatting 和机器学习的三维重建方法。其中 Splat 是拟声词，意为“啪叽一声”：我们可以想象三维场景重建的输入是一些雪球，图片是一面砖墙，图像生成过程就是向墙面扔雪球的过程；每扔一个雪球，墙面上会留有印记，同时会有啪叽一声，所以这个算法也被称为抛雪球法，翻译成“喷溅”也很有灵性。所以 splatting 的核心有三步：一是选择“雪球”，也就是说我要将它捏成一个什么形状的雪球；二是去抛掷雪球，将高斯椭球从3D投影到2D，得到很多个印记；三则合成这些印记以形成最后的图像。</p>
+<p>3DGS 是基于 Splatting 和机器学习的三维重建方法。其中 Splat 是拟声词，意为“啪叽一声”：我们可以想象三维场景重建的输入是一些雪球，图片是一面砖墙，图像生成过程就是向墙面扔雪球的过程；每扔一个雪球，墙面上会留有印记，同时有啪叽一声，所以这个算法也被称为抛雪球法，翻译成“喷溅”也很有灵性。简单地说，splatting 的核心有三步：一是选择“雪球”，也就是说我要将它捏成一个什么形状的雪球；二是去抛掷雪球，将高斯椭球从3D投影到2D，得到很多个印记；三则合成这些印记以形成最后的图像。</p>
 <h2 id="捏雪球用协方差控制椭球形状">捏雪球：用协方差控制椭球形状<a class="headerlink" href="#捏雪球用协方差控制椭球形状" title="Permanent link">&para;</a></h2>
-<p>其实我们的输入是SfM得到的稀疏点云，而由于点是没有体积的，我们首先需要将点膨胀成正方体、球体或者提取基础的三维几何形状，而我们之所以选择高斯分布作为椭球，则是因为它良好的数学性质，比如高斯分布在仿射变换后依然是高斯分布，而沿着某个轴积分将高斯分布从3D降到2D后其依然服从高斯分布。高斯分布的数学描述如下，第二个等号给出了三维情形的展开式。</p>
+<p>其实我们的输入是SfM得到的稀疏点云，而由于点是没有体积的，我们首先需要将点膨胀成正方体、球体或者其他基础的三维几何形状，而我们之所以选择高斯分布作为椭球，是因为它良好的数学性质，比如高斯分布在仿射变换后依然是高斯分布，而沿着某个轴积分将高斯分布从3D降到2D后其依然服从高斯分布。高斯分布的数学描述如下，其中第二个等号给出了三维情形的展开式。</p>
 <div class="arithmatex">\[
 \small
 G(x;\mu,\Sigma) = \cfrac{1}{\sqrt{(2\pi)^k|\Sigma|}}\exp\bigg(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\bigg) = \cfrac{1}{\sqrt{(2\pi)^k|\Sigma|}}\exp\Bigg(-\frac{1}{2}\bigg(\frac{(x-\mu_1)^2}{\sigma_1^2}+\frac{(y-\mu_2)^2}{\sigma_2^2}+\frac{(z-\mu_3)^2}{\sigma_3^2}-\frac{2\sigma_{xy}(x-\mu_1)(y-\mu_2)}{\sigma_1\sigma_2}-\frac{2\sigma_{xz}(x-\mu_1)(z-\mu_3)}{\sigma_1\sigma_3}-\frac{2\sigma_{yz}(y-\mu_2)(z-\mu_3)}{\sigma_2\sigma_3}\bigg)\Bigg)
 \]</div>
-<p>同时，任意椭球都可以由某个椭球通过通过仿射变换得到，而其中仿射变换左乘的矩阵 <span class="arithmatex">\(\small A\)</span>可以视为旋转和缩放这两个作用的合成，即 <span class="arithmatex">\(\small A=RS\)</span>：</p>
+<p>同时，任意椭球都可以由某个椭球通过仿射变换得到，而仿射变换左乘的矩阵 <span class="arithmatex">\(\small A\)</span>可以视为旋转和缩放这两个作用的合成，即 <span class="arithmatex">\(\small A=RS\)</span>：</p>
 <div class="arithmatex">\[
 \small
-w = Ax+b = RSx+b,\thinspace x\sim N(\mu,\Sigma) \thinspace\thinspace\Longrightarrow\thinspace\thinspace w\sim N(A\mu+b, A\Sigma A^T) = N(A\mu+b, RS\Sigma S^TR^T)
+w = Ax+b = RSx+b,\thinspace\thinspace x\sim N(\mu,\Sigma) \thinspace\thinspace\thinspace\thinspace\Longrightarrow\thinspace\thinspace\thinspace\thinspace w\sim N(A\mu+b, A\Sigma A^T) = N(A\mu+b, RS\Sigma S^TR^T)
 \]</div>
-<p>特别地，当 <span class="arithmatex">\(\small x\)</span> 服从标准正态分布时，仿射变换得到的协方差矩阵为 <span class="arithmatex">\(\small RSS^TR^T\)</span>；反过来，给定协方差矩阵 <span class="arithmatex">\(\small\Sigma\)</span>，我们可以通过特征值分解得到 <span class="arithmatex">\(\small R\)</span> 和 <span class="arithmatex">\(\small S\)</span>，即 <span class="arithmatex">\(\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T\)</span>。代码 <code>forward.cu</code> 中的 <code>computeCov3D</code> 函数讲的就是这个仿射变换，<code>scale</code> 即为上述 <span class="arithmatex">\(x\)</span>， <code>float* cov3D</code> 则用以存储协方差矩阵，只是传入的 <code>glm:vec4 rot4</code> 四元数使得代码多了一个计算旋转矩阵的过程。</p>
+<p>特别地，当 <span class="arithmatex">\(\small x\)</span> 服从标准正态分布时，仿射变换得到的协方差矩阵为 <span class="arithmatex">\(\small RSS^TR^T\)</span>；反过来，给定协方差矩阵 <span class="arithmatex">\(\small\Sigma\)</span>，我们可以通过特征值分解得到 <span class="arithmatex">\(\small R\)</span> 和 <span class="arithmatex">\(\small S\)</span>，即 <span class="arithmatex">\(\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T\)</span>。源码 <code>forward.cu</code> 中的 <code>computeCov3D</code> 函数讲的就是这个仿射变换，<code>scale</code> 即为上述 <span class="arithmatex">\(x\)</span>， <code>float* cov3D</code> 则用以存储协方差矩阵，只是传入的 <code>glm:vec4 rot4</code> 四元数使得代码多了一个计算旋转矩阵的过程。</p>
 <div class="collapse-code"><input checked="checked" id="__collapse0" name="__collapse0" type="checkbox" /><div class="language-C++ highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Forward method for converting scale and rotation properties of each</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1">// Gaussian to a 3D covariance matrix in world space. Also takes care</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">// of quaternion normalization.</span>
