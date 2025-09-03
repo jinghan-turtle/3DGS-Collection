@@ -1,12 +1,3 @@
-.md-search {
-    display: none;
-}
-
-:root {
-    --md-text-font: "Noto Serif SC", "Noto Serif SC";
-    --md-code-font: "JetBrains Mono", "Noto Serif SC";
-}
-
 [data-md-color-scheme="Morandi-light"] {
     --md-primary-fg-color: #E5E2B9;  /* The background color of the top bar or header */
     --md-primary-bg-color: #404040;  /* The font color of the top bar or header */
@@ -21,17 +12,21 @@
     --md-accent-fg-color: #91a0a5;  /* the color of link while activated */
 }
 
-/* 修改所有代码字体大小 */
-/* .md-typeset code {
-    font-size: .70rem;
-} */
+:root {
+    --md-text-font: "Noto Serif SC", "Noto Serif SC";
+    --md-code-font: "Roboto Mono", "Noto Serif SC";
+}
 
-/* (覆盖)修改行内代码字体大小 */
-/* .md-typeset code:not(pre code) {
-    font-size: inherit;
-} */
+/* Increase base font size */
+.md-typeset {
+    font-size: 0.92rem;
+    line-height: 1.65;
+}
 
-/* 修改代码块行间距 */
+.md-typeset code {
+    font-size: .75rem;
+}
+
 .md-typeset pre {
-    line-height: 1.6;
+    line-height: 1.65;
 }
