@@ -47,7 +47,7 @@ theme:
 
 
 nav:
-  - Background: src/background.md
+  - Home: index.md
   - 3DGS: 
     - 3D Gaussian Splatting: src/3DGS/3DGS.md
 
