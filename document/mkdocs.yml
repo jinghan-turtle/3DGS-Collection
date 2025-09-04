@@ -102,7 +102,6 @@ markdown_extensions:
         kwds:
           case: lower
 
-  
   - pymdownx.tasklist:
       custom_checkbox: true
 
@@ -133,17 +132,17 @@ extra:
 
 
 extra_css:
+  - assets/stylesheets/code.css
   - assets/stylesheets/theme.css
   - assets/stylesheets/search.css
   - assets/stylesheets/navigation.css
-  - assets/stylesheets/code.css
   - assets/stylesheets/collapse-code.css
-  - https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap
   - https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap
   - https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&display=swap
+  - https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap
 
 
 extra_javascript:
   - assets/javascripts/mathjax.js
-  # - assets/javascripts/extra-loader-Dagi0Qkj.js
+  - assets/javascripts/extra-loader-Dagi0Qkj.js
   - https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML

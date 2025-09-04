@@ -1,30 +1,30 @@
 # 3D Gaussian Splatting
 
-3DGS 是基于 Splatting 和机器学习的三维重建方法。其中 Splat 是拟声词，意为“啪叽一声”：我们可以想象三维场景重建的输入是一些雪球，图片是一面砖墙，图像生成过程就是向墙面扔雪球的过程；每扔一个雪球，墙面上会留有印记，同时有啪叽一声，所以这个算法也被称为抛雪球法，翻译成“喷溅”也很有灵性。简单地说，splatting 的核心有三步：一是选择“雪球”，也就是说我要将它捏成一个什么形状的雪球；二是去抛掷雪球，将高斯椭球从3D投影到2D，得到很多个印记；三则合成这些印记以形成最后的图像。
+3DGS[<sup>[1]</sup>](#3DGS-paper) 是基于 Splatting 和机器学习的三维重建方法。其中 Splat 是拟声词，意为“啪叽一声”：我们可以想象三维场景重建的输入是一些雪球，图片是一面砖墙，图像生成过程就是向墙面扔雪球的过程；每扔一个雪球，墙面上会留有印记，同时伴有啪叽一声，所以这个算法也被称为抛雪球法，翻译成“喷溅”也很有灵性。简单地说，splatting 的核心有三步：一是选择“雪球”，也就是说我要将它捏成一个什么形状的雪球；二是去抛掷雪球，将高斯椭球从 3D 投影到 2D，得到很多个印记；三是合成这些印记以形成最后的图像[<sup>[2]</sup>](#refer-anchor-2)。
 
 ## 捏雪球：用协方差控制椭球形状
 
-其实我们的输入是SfM得到的稀疏点云，而由于点是没有体积的，我们首先需要将点膨胀成正方体、球体或者其他基础的三维几何形状，而我们之所以选择高斯分布作为椭球，是因为它良好的数学性质，比如高斯分布在仿射变换后依然是高斯分布，而沿着某个轴积分将高斯分布从3D降到2D后其依然服从高斯分布。高斯分布的数学描述如下，其中第二个等号给出了三维情形的展开式。
+3DGS 的输入是 SfM 得到的稀疏点云，而由于点是没有体积的，我们首先需要将点膨胀成正方体、球体或者其他基础的三维几何形状。之所以选择高斯分布作为椭球，则是因为它良好的数学性质，比如高斯分布在仿射变换后依然是高斯分布，而沿着某个轴积分将高斯分布从 3D 降到 2D 后其依然服从高斯分布。高斯分布的数学描述如下：
 
 $$
 \small
-G(x;\mu,\Sigma) = \cfrac{1}{\sqrt{(2\pi)^k|\Sigma|}}\exp\bigg(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\bigg) = \cfrac{1}{\sqrt{(2\pi)^k|\Sigma|}}\exp\Bigg(-\frac{1}{2}\bigg(\frac{(x-\mu_1)^2}{\sigma_1^2}+\frac{(y-\mu_2)^2}{\sigma_2^2}+\frac{(z-\mu_3)^2}{\sigma_3^2}-\frac{2\sigma_{xy}(x-\mu_1)(y-\mu_2)}{\sigma_1\sigma_2}-\frac{2\sigma_{xz}(x-\mu_1)(z-\mu_3)}{\sigma_1\sigma_3}-\frac{2\sigma_{yz}(y-\mu_2)(z-\mu_3)}{\sigma_2\sigma_3}\bigg)\Bigg)
+G(x;\mu,\Sigma) = \cfrac{1}{\sqrt{(2\pi)^k|\Sigma|}}\exp\bigg(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\bigg) 
+% = \cfrac{1}{\sqrt{(2\pi)^3|\Sigma|}}\exp\Bigg(-\frac{1}{2}\bigg(\frac{(x-\mu_1)^2}{\sigma_1^2}+\frac{(y-\mu_2)^2}{\sigma_2^2}+\frac{(z-\mu_3)^2}{\sigma_3^2}-\frac{2\sigma_{xy}(x-\mu_1)(y-\mu_2)}{\sigma_1\sigma_2}-\frac{2\sigma_{xz}(x-\mu_1)(z-\mu_3)}{\sigma_1\sigma_3}-\frac{2\sigma_{yz}(y-\mu_2)(z-\mu_3)}{\sigma_2\sigma_3}\bigg)\Bigg)
 $$
 
-同时，任意椭球都可以由某个椭球通过仿射变换得到，而仿射变换左乘的矩阵 $\small A$可以视为旋转和缩放这两个作用的合成，即 $\small A=RS$：
+同时，任意椭球都可以由某个椭球经过仿射变换得到（这其实对应于从世界坐标系到相机坐标系的观测变换，所谓“横看成岭侧成峰，远近高低各不同”，在这里指的就是不同视角下看到的椭球形状是不同的），而仿射变换左乘的矩阵 $\small A$ 可以视为旋转和缩放这两个作用的合成，即 $\small A=RS$：
 
 $$
 \small
 w = Ax+b = RSx+b,\thinspace\thinspace x\sim N(\mu,\Sigma) \thinspace\thinspace\thinspace\thinspace\Longrightarrow\thinspace\thinspace\thinspace\thinspace w\sim N(A\mu+b, A\Sigma A^T) = N(A\mu+b, RS\Sigma S^TR^T)
 $$
 
-特别地，当 $\small x$ 服从标准正态分布时，仿射变换得到的协方差矩阵为 $\small RSS^TR^T$；反过来，给定协方差矩阵 $\small\Sigma$，我们可以通过特征值分解得到 $\small R$ 和 $\small S$，即 $\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T$。源码 `forward.cu` 中的 `computeCov3D` 函数讲的就是这个仿射变换，`scale` 即为上述 $x$， `float* cov3D` 则用以存储协方差矩阵，只是传入的 `glm:vec4 rot4` 四元数使得代码多了一个计算旋转矩阵的过程。
+特别地，当 $\small x$ 服从标准正态分布时，仿射变换得到的协方差矩阵为 $\small RSS^TR^T$；反过来，给定协方差矩阵 $\small\Sigma$，我们可以通过特征值分解得到 $\small R$ 和 $\small S$，即 $\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T:=RSS^TR^T$。源代码 `cuda_rasterization/forward.cu` 中的 `computeCov3D` 函数讲的就是这个仿射变换，传入的三维向量 `scale` 即为上述公式中的 $x$， `cov3D` 则用于存储协方差矩阵，只是传入的四元数 `rot4` 使得代码多了一个计算旋转矩阵的过程。
 
 //// collapse-code
-```C++ hl_lines="26 27 28 29"
-// Forward method for converting scale and rotation properties of each
-// Gaussian to a 3D covariance matrix in world space. Also takes care
-// of quaternion normalization.
+```C++ hl_lines="25-28"
+// Forward method for converting scale and rotation properties of each Gaussian to 
+// a 3D covariance matrix in world space. Also takes care of quaternion normalization.
 __device__ void computeCov3D(const glm::vec3 scale, float mod, const glm::vec4 rot, float* cov3D)
 {
     // Create scaling matrix
@@ -34,7 +34,7 @@ __device__ void computeCov3D(const glm::vec3 scale, float mod, const glm::vec4 r
     S[2][2] = mod * scale.z;
 
     // Normalize quaternion to get valid rotation
-    glm::vec4 q = rot;// / glm::length(rot);
+    glm::vec4 q = rot;
     float r = q.x;
     float x = q.y;
     float y = q.z;
@@ -123,8 +123,16 @@ __device__ float3 computeCov2D(const float3& mean, float focal_x, float focal_y,
 3. 快速光栅化: 3D高斯的轴向积分等同于2D高斯, 这从数学层面摆脱了采样量的限制, 计算量由高斯数量决定, 而高斯又可以使用光栅化管线快速并行渲染.
 
 
-<div id="refer-anchor-1"></div>
-[1] [Kerbl B, Kopanas G, Leimkühler T, et al. 3D Gaussian splatting for real-time radiance field rendering[J]. ACM Trans. Graph., 2023, 42(4): 139:1-139:14.](./3DGS.pdf)
+## 代码运行
+
+```
+python train.py -s data/truck/ -m data/truck/output
+```
+
+
+
+<div id="3DGS-paper"></div>
+[1] [Kerbl B, Kopanas G, Leimkühler T, et al. 3D Gaussian splatting for real-time radiance field rendering[J]. ACM Trans. Graph., 2023, 42(4): 139:1-139:14.](https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/)
 
 <div id="refer-anchor-2"></div>
-[2] [Bilibili上的这个视频给出了3DGS人性化的讲解，同时也是我这篇笔记的来源。](https://www.bilibili.com/video/BV1zi421v7Dr/?spm_id_from=333.337.search-card.all.click&vd_source=df8c598e3026e471e571a5970603f409)
+[2] [Bilibili上的这个视频给出了3DGS人性化的讲解，也是我这篇笔记的来源。](https://www.bilibili.com/video/BV1zi421v7Dr/?spm_id_from=333.337.search-card.all.click&vd_source=df8c598e3026e471e571a5970603f409)
