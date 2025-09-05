@@ -12,17 +12,18 @@ G(x;\mu,\Sigma) = \cfrac{1}{\sqrt{(2\pi)^k|\Sigma|}}\exp\bigg(-\frac{1}{2}(x-\mu
 % = \cfrac{1}{\sqrt{(2\pi)^3|\Sigma|}}\exp\Bigg(-\frac{1}{2}\bigg(\frac{(x-\mu_1)^2}{\sigma_1^2}+\frac{(y-\mu_2)^2}{\sigma_2^2}+\frac{(z-\mu_3)^2}{\sigma_3^2}-\frac{2\sigma_{xy}(x-\mu_1)(y-\mu_2)}{\sigma_1\sigma_2}-\frac{2\sigma_{xz}(x-\mu_1)(z-\mu_3)}{\sigma_1\sigma_3}-\frac{2\sigma_{yz}(y-\mu_2)(z-\mu_3)}{\sigma_2\sigma_3}\bigg)\Bigg)
 $$
 
-同时，任意椭球都可以由某个椭球经过仿射变换得到（这其实对应于从世界坐标系到相机坐标系的观测变换，所谓“横看成岭侧成峰，远近高低各不同”，在这里指的就是不同视角下看到的椭球形状是不同的），而仿射变换左乘的矩阵 $\small A$ 可以视为旋转和缩放这两个作用的合成，即 $\small A=RS$：
+同时，任意椭球都可以由某个椭球经过仿射变换得到（这其实对应于从世界坐标系到相机坐标系的观测变换，所谓“横看成岭侧成峰，远近高低各不同”，在这里指的就是不同视角下看到的椭球形状是不同的），而仿射变换左乘的矩阵 $\small W$ 可以视为旋转和缩放这两个作用的合成，即 $\small W=RS$：
 
 $$
 \small
-w = Ax+b = RSx+b,\thinspace\thinspace x\sim N(\mu,\Sigma) \thinspace\thinspace\thinspace\thinspace\Longrightarrow\thinspace\thinspace\thinspace\thinspace w\sim N(A\mu+b, A\Sigma A^T) = N(A\mu+b, RS\Sigma S^TR^T)
+y = Wx+b = RSx+b,\thinspace\thinspace x\sim N(\mu,\Sigma) \thinspace\thinspace\thinspace\thinspace\Longrightarrow\thinspace\thinspace\thinspace\thinspace y\sim N(W\mu+b, W\Sigma W^T) = N(W\mu+b, RS\Sigma S^TR^T)
 $$
 
-特别地，当 $\small x$ 服从标准正态分布时，仿射变换得到的协方差矩阵为 $\small RSS^TR^T$；反过来，给定协方差矩阵 $\small\Sigma$，我们可以通过特征值分解得到 $\small R$ 和 $\small S$，即 $\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T:=RSS^TR^T$。源代码 `cuda_rasterization/forward.cu` 中的 `computeCov3D` 函数讲的就是这个仿射变换，传入的三维向量 `scale` 即为上述公式中的 $x$， `cov3D` 则用于存储协方差矩阵，只是传入的四元数 `rot4` 使得代码多了一个计算旋转矩阵的过程。
+特别地，当 $\small x$ 服从标准正态分布时，仿射变换得到的协方差矩阵为 $\small RSS^TR^T$；反过来，给定协方差矩阵 $\small\Sigma$，我们可以通过特征值分解得到 $\small R$ 和 $\small S$，即 $\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T:=RSS^TR^T$。下面的 `computeCov3D` 函数讲的就是这个仿射变换，传入的三维向量 `scale` 即为上述公式中的 $\small x$， `cov3D` 则用于存储协方差矩阵，只是传入的四元数 `rot4` 使得代码多了一个计算旋转矩阵的过程。
 
 //// collapse-code
 ```C++ hl_lines="25-28"
+/* submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu */
 // Forward method for converting scale and rotation properties of each Gaussian to 
 // a 3D covariance matrix in world space. Also takes care of quaternion normalization.
 __device__ void computeCov3D(const glm::vec3 scale, float mod, const glm::vec4 rot, float* cov3D)
@@ -63,18 +64,48 @@ __device__ void computeCov3D(const glm::vec3 scale, float mod, const glm::vec4 r
 ```
 ////
 
+## 抛雪球：将三维椭球投影到二维
 
-## 抛雪球：为透视变换引入雅可比
+从世界坐标系到相机坐标系的观测变换通过上面的仿射变换描述，而相机坐标系到归一化坐标系的投影变换却并不是一个线性变换，它需要将视锥的屁股压扁并压成正方体（这样一来也将射线与坐标轴平行对齐，使得沿射线的积分计算变得更加方便），所以我们考虑引入雅可比矩阵对该非线性变换作局部线性近似，也就是用仿射变换来近似局部的投影作用。那么，在该压扁的射线坐标系下的协方差矩阵为 $\small\Sigma_{ray}=JW\Sigma W^TJ^T$，而均值本身便是高斯椭球的中心点，可直接对其应用投影变换。如此，再对投影后的高斯椭圆作视口变换便可得到其在像素坐标系下的表示。
 
-对非线性变换的局部线性近似
+<!-- $$
+\small
+\frac{1}{z}
+\begin{bmatrix}
+    n & 0 & 0 & 0 \\
+    0 & n & 0 & 0 \\
+    0 & 0 & n+f & -nf \\
+    0 & 0 & 1 & 0
+\end{bmatrix}
+\begin{bmatrix}
+    x \\ y \\ z \\ 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+    nx/z \\ ny/z \\ n+f-nf/z \\ 1
+\end{bmatrix}
+\thinspace\thinspace\thinspace
+\Longrightarrow
+\thinspace\thinspace\thinspace
+J = 
+\begin{bmatrix}
+    n/z & 0 & -nx/z^2 \\
+    0 & y/z & -ny/z^2 \\
+    0 & 0 & -nf/z^2
+\end{bmatrix}
+$$ -->
+
+![](./perspective-projection-with-formula.png){ width=90% style="display: block; margin: 0 auto;" }
+
+正因为是局部线性近似，所以下面投影变换的 `computeCov2D` 函数需要先计算高斯椭球均值点在视锥中的位置；也正因为视锥压扁后的正交投影与 $\small z$ 方向无关，所以实际上雅可比矩阵的第三行是可以置零的。
 
 //// collapse-code
-```C++
+```C++ hl_lines="16-19"
+/* submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu */
 // Forward version of 2D covariance matrix computation
 __device__ float3 computeCov2D(const float3& mean, float focal_x, float focal_y, float tan_fovx, float tan_fovy, const float* cov3D, const float* viewmatrix)
 {
-	// The following models the steps outlined by equations 29
-	// and 31 in "EWA Splatting" (Zwicker et al., 2002). 
+	// The following models the steps outlined by equations 29 and 31 in "EWA Splatting" (Zwicker et al., 2002). 
 	// Additionally considers aspect / scaling of viewport.
 	// Transposes used to account for row-/column-major conventions.
 	float3 t = transformPoint4x3(mean, viewmatrix);
@@ -110,9 +141,72 @@ __device__ float3 computeCov2D(const float3& mean, float focal_x, float focal_y,
 ```
 ////
 
-雪球有多大、有多重
+## 雪球颜色和像素着色
 
-## 雪球颜色：
+通过上述过程，我们已经捏好了雪球，也想好如何把雪球往墙上砸了，但雪球不一定是白色的——3DGS 利用球谐函数 $\small\sum_l\sum_{m=-l}^l c_l^my_l^m(\theta,\phi)$ 来表达高斯椭球的颜色。相比 RGB（对应于零阶球谐函数），高阶球谐函数给出了更为逼真的环境贴图和亮度重建效果，使得椭球呈现的颜色与观测方向相关——直觉上讲球谐函数包含了更为丰富的信息，比如三阶球谐函数所包含的信息维度达到了 $\small (1+3+5+7)\times 3$。下面代码传入的参数 `deg` 即为球谐函数的阶数，`glm::vec3 result = SH_C0 * sh[0]` 便是在算第零阶的元素，后续则是按公式分别计算不同阶次的球谐函数值。
+
+//// collapse-code
+``` C++
+/* submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu */
+// Forward method for converting the input spherical harmonics coefficients of each Gaussian to a simple RGB color.
+__device__ glm::vec3 computeColorFromSH(int idx, int deg, int max_coeffs, const glm::vec3* means, glm::vec3 campos, const float* shs, bool* clamped)
+{
+	// The implementation is loosely based on code for 
+	// "Differentiable Point-Based Radiance Fields for 
+	// Efficient View Synthesis" by Zhang et al. (2022)
+	glm::vec3 pos = means[idx];
+	glm::vec3 dir = pos - campos;
+	dir = dir / glm::length(dir);
+
+	glm::vec3* sh = ((glm::vec3*)shs) + idx * max_coeffs;
+	glm::vec3 result = SH_C0 * sh[0];
+
+	if (deg > 0)
+	{
+		float x = dir.x;
+		float y = dir.y;
+		float z = dir.z;
+		result = result - SH_C1 * y * sh[1] + SH_C1 * z * sh[2] - SH_C1 * x * sh[3];
+
+		if (deg > 1)
+		{
+			float xx = x * x, yy = y * y, zz = z * z;
+			float xy = x * y, yz = y * z, xz = x * z;
+			result = result +
+				SH_C2[0] * xy * sh[4] +
+				SH_C2[1] * yz * sh[5] +
+				SH_C2[2] * (2.0f * zz - xx - yy) * sh[6] +
+				SH_C2[3] * xz * sh[7] +
+				SH_C2[4] * (xx - yy) * sh[8];
+
+			if (deg > 2)
+			{
+				result = result +
+					SH_C3[0] * y * (3.0f * xx - yy) * sh[9] +
+					SH_C3[1] * xy * z * sh[10] +
+					SH_C3[2] * y * (4.0f * zz - xx - yy) * sh[11] +
+					SH_C3[3] * z * (2.0f * zz - 3.0f * xx - 3.0f * yy) * sh[12] +
+					SH_C3[4] * x * (4.0f * zz - xx - yy) * sh[13] +
+					SH_C3[5] * z * (xx - yy) * sh[14] +
+					SH_C3[6] * x * (xx - 3.0f * yy) * sh[15];
+			}
+		}
+	}
+	result += 0.5f;
+
+	// RGB colors are clamped to positive values. If values are
+	// clamped, we need to keep track of this for the backward pass.
+	clamped[3 * idx + 0] = (result.x < 0);
+	clamped[3 * idx + 1] = (result.y < 0);
+	clamped[3 * idx + 2] = (result.z < 0);
+	return glm::max(result, 0.0f);
+}
+```
+////
+
+$\small\alpha-blending$ 中的像素颜色是通过沿射线的体渲染得到的，即将高斯椭球按照射线坐标系的深度排序，然后按从近到远的顺序依次抛出：$\small C=\sum_{i=1}^N T_i\alpha_ic_i=\sum_{i=1}^N\prod_{j=1}^{i-1}(1-\alpha_i)\big(1-\exp(-\sigma_i\delta_i)\big)c_i$，其中 $\small T(s)$ 表示在 $\small s$ 点之前光线没有被阻碍的概率或者说透过率，$\small\sigma(s)$ 表示在 $\small s$ 点处光线撞击粒子或者说被粒子阻碍的概率，$\small c(s)$ 表示在 $\small s$ 点处粒子发出的颜色，$\small\delta(s)$ 则表示点 $\small s$ 处沿射线离散积分的间距。
+
+## 完整流程
 
 ![](./overview_of_3DGS.png){ width=100% style="display: block; margin: 0 auto;" }
 
