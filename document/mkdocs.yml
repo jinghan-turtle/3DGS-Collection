@@ -50,6 +50,8 @@ nav:
   - Home: index.md
   - 3DGS: 
     - 3D Gaussian Splatting: src/3DGS/3DGS.md
+    - 3DGS-based RGB-D SLAM:
+      - SplaTAM: src/3DGS/3DGS-based_RGB-D_SLAM/SplaTAM.md
 
 
 markdown_extensions: 
@@ -144,5 +146,5 @@ extra_css:
 
 extra_javascript:
   - assets/javascripts/mathjax.js
-  - assets/javascripts/extra-loader-Dagi0Qkj.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
   - https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML

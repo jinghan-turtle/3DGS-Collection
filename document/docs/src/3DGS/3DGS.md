@@ -141,7 +141,7 @@ __device__ float3 computeCov2D(const float3& mean, float focal_x, float focal_y,
 ```
 ////
 
-## 雪球颜色和像素着色
+## 雪球颜色和像素着色：球谐函数
 
 通过上述过程，我们已经捏好了雪球，也想好如何把雪球往墙上砸了，但雪球不一定是白色的——3DGS 利用球谐函数 $\small\sum_l\sum_{m=-l}^l c_l^my_l^m(\theta,\phi)$ 来表达高斯椭球的颜色。相比 RGB（对应于零阶球谐函数），高阶球谐函数给出了更为逼真的环境贴图和亮度重建效果，使得椭球呈现的颜色与观测方向相关——直觉上讲球谐函数包含了更为丰富的信息，比如三阶球谐函数所包含的信息维度达到了 $\small (1+3+5+7)\times 3$。下面代码传入的参数 `deg` 即为球谐函数的阶数，`glm::vec3 result = SH_C0 * sh[0]` 便是在算第零阶的元素，后续则是按公式分别计算不同阶次的球谐函数值。
 
@@ -206,18 +206,32 @@ __device__ glm::vec3 computeColorFromSH(int idx, int deg, int max_coeffs, const 
 
 $\small\alpha-blending$ 中的像素颜色是通过沿射线的体渲染得到的，即将高斯椭球按照射线坐标系的深度排序，然后按从近到远的顺序依次抛出：$\small C=\sum_{i=1}^N T_i\alpha_ic_i=\sum_{i=1}^N\prod_{j=1}^{i-1}(1-\alpha_i)\big(1-\exp(-\sigma_i\delta_i)\big)c_i$，其中 $\small T(s)$ 表示在 $\small s$ 点之前光线没有被阻碍的概率或者说透过率，$\small\sigma(s)$ 表示在 $\small s$ 点处光线撞击粒子或者说被粒子阻碍的概率，$\small c(s)$ 表示在 $\small s$ 点处粒子发出的颜色，$\small\delta(s)$ 则表示点 $\small s$ 处沿射线离散积分的间距。
 
-## 完整流程
+## 完整流程：机器学习与参数评估
+
+每个点膨胀成的三维高斯椭球参数包括：中心点位置 $\small (x,y,z)$、协方差矩阵 $\small\Sigma$、球谐函数系数矩阵和透明度 $\small\alpha$，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 $\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}$，如下述代码块所示。可以注意到的是，代码 `submodules` 模块下有 `simple-knn` 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免铺不满或者椭球重叠的情况。
+
+//// collapse-code
+``` Python hl_lines="12"
+''' train.py '''
+def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoint_iterations, checkpoint, debug_from):
+	...
+	# Loss
+	gt_image = viewpoint_cam.original_image.cuda()
+	Ll1 = l1_loss(image, gt_image)
+	if FUSED_SSIM_AVAILABLE:
+		ssim_value = fused_ssim(image.unsqueeze(0), gt_image.unsqueeze(0))
+	else:
+		ssim_value = ssim(image, gt_image)
+
+	loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim_value)
+```
+////
+
+但是如果只对 colmap 生成的初始点云作优化的话，那么后续不管如何优化高斯椭球的数量都是不变的，这使得算法强依赖于 SfM 的初始化，所以 3DGS 提出了自适应密度控制与优化，即对透明的高斯分布作周期性滤除或者说剔除存在感太低的高斯椭球，同时，对于 under-reconstruction 的区域，克隆高斯并沿着梯度方向移动以覆盖几何体；对于 over-reconstruction 的区域则拆分高斯以更好地拟合细粒度细节。可以发现，机器学习的部分非常简单且不涉及深度学习的知识，3DGS 的难度主要在于大量计算机图形学的理解和 GPU 的高性能编程。
 
 ![](./overview_of_3DGS.png){ width=100% style="display: block; margin: 0 auto;" }
 
-1. 3D高斯场景表示: 每个高斯模型由xyz位置、各方向缩放的协方差矩阵、RGB 颜色和透明度$\alpha$四个参数来表述, 通过从最初SfM得到的稀疏点云进行初始化, 多个高斯模型共同构成了整个场景的连续体积表示. "We choose 3D Gaussians, which are differentiable and can be easily projected to 2D splats allowing fast $\alpha$-blending for rendering", 也就是说, 3D高斯这种显式表示的基元继承可微分体积表示的属性, 相比起NeRF通过Ray-cast方法累积颜色和不透明度的backward mapping过程, 3D高斯泼溅则是基于object-order算法的forward mapping过程.
-
-2. 自适应密度控制与优化: 对透明的高斯分布作周期性滤除. 同时, 对于under-reconstruction的欠重建区域, 克隆高斯并沿着梯度方向移动以覆盖几何体; 对于over-reconstruction的过重建区域则拆分高斯以更好地拟合细粒度细节.
-
-3. 快速光栅化: 3D高斯的轴向积分等同于2D高斯, 这从数学层面摆脱了采样量的限制, 计算量由高斯数量决定, 而高斯又可以使用光栅化管线快速并行渲染.
-
-
-## 代码运行
+## 代码运行： Ubuntu 20.04
 
 ```
 python train.py -s data/truck/ -m data/truck/output
