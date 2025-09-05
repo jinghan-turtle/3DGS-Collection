@@ -12,6 +12,8 @@
         <link rel="prev" href="../../..">
       
       
+        <link rel="next" href="../3DGS-based_RGB-D_SLAM/SplaTAM/">
+      
       
       <link rel="icon" href="../../../assets/images/3D-Gaussians.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
@@ -334,6 +336,8 @@
       
         
       
+        
+      
     
     
       
@@ -441,27 +445,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#雪球颜色和像素着色" class="md-nav__link">
+  <a href="#雪球颜色和像素着色球谐函数" class="md-nav__link">
     <span class="md-ellipsis">
-      雪球颜色和像素着色
+      雪球颜色和像素着色：球谐函数
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#完整流程" class="md-nav__link">
+  <a href="#完整流程机器学习与参数评估" class="md-nav__link">
     <span class="md-ellipsis">
-      完整流程
+      完整流程：机器学习与参数评估
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#代码运行" class="md-nav__link">
+  <a href="#代码运行-ubuntu-2004" class="md-nav__link">
     <span class="md-ellipsis">
-      代码运行
+      代码运行： Ubuntu 20.04
     </span>
   </a>
   
@@ -470,6 +474,84 @@
     </ul>
   
 </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    3DGS-based RGB-D SLAM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            3DGS-based RGB-D SLAM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3DGS-based_RGB-D_SLAM/SplaTAM/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SplaTAM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -628,7 +710,7 @@ $$ -->
 </span></code></pre></div>
 <div class="code-footer"><label class="expand" for="__collapse1" tabindex="0" title="expand"></label><label class="collapse" for="__collapse1" tabindex="0" title="collapse"></label></div>
 </div>
-<h2 id="雪球颜色和像素着色">雪球颜色和像素着色<a class="headerlink" href="#雪球颜色和像素着色" title="Permanent link">&para;</a></h2>
+<h2 id="雪球颜色和像素着色球谐函数">雪球颜色和像素着色：球谐函数<a class="headerlink" href="#雪球颜色和像素着色球谐函数" title="Permanent link">&para;</a></h2>
 <p>通过上述过程，我们已经捏好了雪球，也想好如何把雪球往墙上砸了，但雪球不一定是白色的——3DGS 利用球谐函数 <span class="arithmatex">\(\small\sum_l\sum_{m=-l}^l c_l^my_l^m(\theta,\phi)\)</span> 来表达高斯椭球的颜色。相比 RGB（对应于零阶球谐函数），高阶球谐函数给出了更为逼真的环境贴图和亮度重建效果，使得椭球呈现的颜色与观测方向相关——直觉上讲球谐函数包含了更为丰富的信息，比如三阶球谐函数所包含的信息维度达到了 <span class="arithmatex">\(\small (1+3+5+7)\times 3\)</span>。下面代码传入的参数 <code>deg</code> 即为球谐函数的阶数，<code>glm::vec3 result = SH_C0 * sh[0]</code> 便是在算第零阶的元素，后续则是按公式分别计算不同阶次的球谐函数值。</p>
 <div class="collapse-code"><input checked="checked" id="__collapse2" name="__collapse2" type="checkbox" /><div class="language-C++ highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">/* submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu */</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">// Forward method for converting the input spherical harmonics coefficients of each Gaussian to a simple RGB color.</span>
@@ -688,21 +770,27 @@ $$ -->
 <div class="code-footer"><label class="expand" for="__collapse2" tabindex="0" title="expand"></label><label class="collapse" for="__collapse2" tabindex="0" title="collapse"></label></div>
 </div>
 <p><span class="arithmatex">\(\small\alpha-blending\)</span> 中的像素颜色是通过沿射线的体渲染得到的，即将高斯椭球按照射线坐标系的深度排序，然后按从近到远的顺序依次抛出：<span class="arithmatex">\(\small C=\sum_{i=1}^N T_i\alpha_ic_i=\sum_{i=1}^N\prod_{j=1}^{i-1}(1-\alpha_i)\big(1-\exp(-\sigma_i\delta_i)\big)c_i\)</span>，其中 <span class="arithmatex">\(\small T(s)\)</span> 表示在 <span class="arithmatex">\(\small s\)</span> 点之前光线没有被阻碍的概率或者说透过率，<span class="arithmatex">\(\small\sigma(s)\)</span> 表示在 <span class="arithmatex">\(\small s\)</span> 点处光线撞击粒子或者说被粒子阻碍的概率，<span class="arithmatex">\(\small c(s)\)</span> 表示在 <span class="arithmatex">\(\small s\)</span> 点处粒子发出的颜色，<span class="arithmatex">\(\small\delta(s)\)</span> 则表示点 <span class="arithmatex">\(\small s\)</span> 处沿射线离散积分的间距。</p>
-<h2 id="完整流程">完整流程<a class="headerlink" href="#完整流程" title="Permanent link">&para;</a></h2>
+<h2 id="完整流程机器学习与参数评估">完整流程：机器学习与参数评估<a class="headerlink" href="#完整流程机器学习与参数评估" title="Permanent link">&para;</a></h2>
+<p>每个点膨胀成的三维高斯椭球参数包括：中心点位置 <span class="arithmatex">\(\small (x,y,z)\)</span>、协方差矩阵 <span class="arithmatex">\(\small\Sigma\)</span>、球谐函数系数矩阵和透明度 <span class="arithmatex">\(\small\alpha\)</span>，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 <span class="arithmatex">\(\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}\)</span>，如下述代码块所示。可以注意到的是，代码 <code>submodules</code> 模块下有 <code>simple-knn</code> 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免铺不满或者椭球重叠的情况。</p>
+<div class="collapse-code"><input checked="checked" id="__collapse3" name="__collapse3" type="checkbox" /><div class="language-Python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="sd">&#39;&#39;&#39; train.py &#39;&#39;&#39;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">training</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">testing_iterations</span><span class="p">,</span> <span class="n">saving_iterations</span><span class="p">,</span> <span class="n">checkpoint_iterations</span><span class="p">,</span> <span class="n">checkpoint</span><span class="p">,</span> <span class="n">debug_from</span><span class="p">):</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>	<span class="o">...</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>	<span class="c1"># Loss</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>	<span class="n">gt_image</span> <span class="o">=</span> <span class="n">viewpoint_cam</span><span class="o">.</span><span class="n">original_image</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>	<span class="n">Ll1</span> <span class="o">=</span> <span class="n">l1_loss</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">gt_image</span><span class="p">)</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>	<span class="k">if</span> <span class="n">FUSED_SSIM_AVAILABLE</span><span class="p">:</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>		<span class="n">ssim_value</span> <span class="o">=</span> <span class="n">fused_ssim</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">gt_image</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>	<span class="k">else</span><span class="p">:</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>		<span class="n">ssim_value</span> <span class="o">=</span> <span class="n">ssim</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">gt_image</span><span class="p">)</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="hll">	<span class="n">loss</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">opt</span><span class="o">.</span><span class="n">lambda_dssim</span><span class="p">)</span> <span class="o">*</span> <span class="n">Ll1</span> <span class="o">+</span> <span class="n">opt</span><span class="o">.</span><span class="n">lambda_dssim</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">ssim_value</span><span class="p">)</span>
+</span></span></code></pre></div>
+<div class="code-footer"><label class="expand" for="__collapse3" tabindex="0" title="expand"></label><label class="collapse" for="__collapse3" tabindex="0" title="collapse"></label></div>
+</div>
+<p>但是如果只对 colmap 生成的初始点云作优化的话，那么后续不管如何优化高斯椭球的数量都是不变的，这使得算法强依赖于 SfM 的初始化，所以 3DGS 提出了自适应密度控制与优化，即对透明的高斯分布作周期性滤除或者说剔除存在感太低的高斯椭球，同时，对于 under-reconstruction 的区域，克隆高斯并沿着梯度方向移动以覆盖几何体；对于 over-reconstruction 的区域则拆分高斯以更好地拟合细粒度细节。可以发现，机器学习的部分非常简单且不涉及深度学习的知识，3DGS 的难度主要在于大量计算机图形学的理解和 GPU 的高性能编程。</p>
 <p><img alt="" src="../overview_of_3DGS.png" style="display: block; margin: 0 auto;" width="100%" /></p>
-<ol>
-<li>
-<p>3D高斯场景表示: 每个高斯模型由xyz位置、各方向缩放的协方差矩阵、RGB 颜色和透明度<span class="arithmatex">\(\alpha\)</span>四个参数来表述, 通过从最初SfM得到的稀疏点云进行初始化, 多个高斯模型共同构成了整个场景的连续体积表示. "We choose 3D Gaussians, which are differentiable and can be easily projected to 2D splats allowing fast <span class="arithmatex">\(\alpha\)</span>-blending for rendering", 也就是说, 3D高斯这种显式表示的基元继承可微分体积表示的属性, 相比起NeRF通过Ray-cast方法累积颜色和不透明度的backward mapping过程, 3D高斯泼溅则是基于object-order算法的forward mapping过程.</p>
-</li>
-<li>
-<p>自适应密度控制与优化: 对透明的高斯分布作周期性滤除. 同时, 对于under-reconstruction的欠重建区域, 克隆高斯并沿着梯度方向移动以覆盖几何体; 对于over-reconstruction的过重建区域则拆分高斯以更好地拟合细粒度细节.</p>
-</li>
-<li>
-<p>快速光栅化: 3D高斯的轴向积分等同于2D高斯, 这从数学层面摆脱了采样量的限制, 计算量由高斯数量决定, 而高斯又可以使用光栅化管线快速并行渲染.</p>
-</li>
-</ol>
-<h2 id="代码运行">代码运行<a class="headerlink" href="#代码运行" title="Permanent link">&para;</a></h2>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python train.py -s data/truck/ -m data/truck/output
+<h2 id="代码运行-ubuntu-2004">代码运行： Ubuntu 20.04<a class="headerlink" href="#代码运行-ubuntu-2004" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python train.py -s data/truck/ -m data/truck/output
 </span></code></pre></div>
 <div id="3DGS-paper"></div>
 <p>[1] <a href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/">Kerbl B, Kopanas G, Leimkühler T, et al. 3D Gaussian splatting for real-time radiance field rendering[J]. ACM Trans. Graph., 2023, 42(4): 139:1-139:14.</a></p>
@@ -754,6 +842,22 @@ $$ -->
             </div>
           </a>
         
+        
+          
+          <a href="../3DGS-based_RGB-D_SLAM/SplaTAM/" class="md-footer__link md-footer__link--next" aria-label="Next: SplaTAM">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                SplaTAM
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
         
       </nav>
     
@@ -808,7 +912,7 @@ $$ -->
       
         <script src="../../../assets/javascripts/mathjax.js"></script>
       
-        <script src="../../../assets/javascripts/extra-loader-Dagi0Qkj.js"></script>
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
       
