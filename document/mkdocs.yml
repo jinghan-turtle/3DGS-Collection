@@ -49,7 +49,7 @@ theme:
 nav:
   - Home: index.md
   - 3DGS: 
-    - 3D Gaussian Splatting: src/3DGS/3DGS.md
+    - 3D Gaussian Splatting: src/3DGS/gaussian-splatting.md
     - 3DGS-based RGB-D SLAM:
       - SplaTAM: src/3DGS/3DGS-based_RGB-D_SLAM/SplaTAM.md
 

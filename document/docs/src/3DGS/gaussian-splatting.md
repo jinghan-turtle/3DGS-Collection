@@ -208,7 +208,7 @@ $\small\alpha-blending$ 中的像素颜色是通过沿射线的体渲染得到�
 
 ## 完整流程：机器学习与参数评估
 
-每个点膨胀成的三维高斯椭球参数包括：中心点位置 $\small (x,y,z)$、协方差矩阵 $\small\Sigma$、球谐函数系数矩阵和透明度 $\small\alpha$，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 $\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}$，如下述代码块所示。可以注意到的是，代码 `submodules` 模块下有 `simple-knn` 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免铺不满或者椭球重叠的情况。
+每个点膨胀成的三维高斯椭球参数包括：中心点位置 $\small (x,y,z)$、协方差矩阵 $\small\Sigma=RS$、球谐函数系数矩阵和透明度 $\small\alpha$，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 $\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}$，如下述代码块所示。可以注意到的是，代码 `submodules` 模块下有 `simple-knn` 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免铺不满或者椭球重叠的情况。
 
 //// collapse-code
 ``` Python hl_lines="12"
