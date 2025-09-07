@@ -16,13 +16,13 @@ $$
 
 $$
 \small
-y = Wx+b = RSx+b,\thinspace\thinspace x\sim N(\mu,\Sigma) \thinspace\thinspace\thinspace\thinspace\Longrightarrow\thinspace\thinspace\thinspace\thinspace y\sim N(W\mu+b, W\Sigma W^T) = N(W\mu+b, RS\Sigma S^TR^T)
+y = Wx+b = RSx+b,\thinspace\thinspace x\sim N(\mu,\Sigma) \thinspace\thinspace\thinspace\thinspace\thinspace\Longrightarrow\thinspace\thinspace\thinspace\thinspace\thinspace y\sim N(W\mu+b, W\Sigma W^T) = N(W\mu+b, RS\Sigma S^TR^T)
 $$
 
 特别地，当 $\small x$ 服从标准正态分布时，仿射变换得到的协方差矩阵为 $\small RSS^TR^T$；反过来，给定协方差矩阵 $\small\Sigma$，我们可以通过特征值分解得到 $\small R$ 和 $\small S$，即 $\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T:=RSS^TR^T$。下面的 `computeCov3D` 函数讲的就是这个仿射变换，传入的三维向量 `scale` 即为上述公式中的 $\small x$， `cov3D` 则用于存储协方差矩阵，只是传入的四元数 `rot4` 使得代码多了一个计算旋转矩阵的过程。
 
 //// collapse-code
-```C++ hl_lines="25-28"
+```C++ hl_lines="26-29"
 /* submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu */
 // Forward method for converting scale and rotation properties of each Gaussian to 
 // a 3D covariance matrix in world space. Also takes care of quaternion normalization.
@@ -100,7 +100,7 @@ $$ -->
 正因为是局部线性近似，所以下面投影变换的 `computeCov2D` 函数需要先计算高斯椭球均值点在视锥中的位置；也正因为视锥压扁后的正交投影与 $\small z$ 方向无关，所以实际上雅可比矩阵的第三行是可以置零的。
 
 //// collapse-code
-```C++ hl_lines="16-19"
+```C++ hl_lines="17-20"
 /* submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu */
 // Forward version of 2D covariance matrix computation
 __device__ float3 computeCov2D(const float3& mean, float focal_x, float focal_y, float tan_fovx, float tan_fovy, const float* cov3D, const float* viewmatrix)
@@ -204,11 +204,143 @@ __device__ glm::vec3 computeColorFromSH(int idx, int deg, int max_coeffs, const 
 ```
 ////
 
-$\small\alpha-blending$ 中的像素颜色是通过沿射线的体渲染得到的，即将高斯椭球按照射线坐标系的深度排序，然后按从近到远的顺序依次抛出：$\small C=\sum_{i=1}^N T_i\alpha_ic_i=\sum_{i=1}^N\prod_{j=1}^{i-1}(1-\alpha_i)\big(1-\exp(-\sigma_i\delta_i)\big)c_i$，其中 $\small T(s)$ 表示在 $\small s$ 点之前光线没有被阻碍的概率或者说透过率，$\small\sigma(s)$ 表示在 $\small s$ 点处光线撞击粒子或者说被粒子阻碍的概率，$\small c(s)$ 表示在 $\small s$ 点处粒子发出的颜色，$\small\delta(s)$ 则表示点 $\small s$ 处沿射线离散积分的间距。
+$\small\alpha-blending$ 中的像素颜色是通过沿射线的体渲染得到的，即将高斯椭球按照射线坐标系的深度排序，然后按从近到远的顺序依次抛出：$\small C=\sum_{i=1}^N T_i\alpha_ic_i=\sum_{i=1}^N\prod_{j=1}^{i-1}(1-\alpha_i)\big(1-\exp(-\sigma_i\delta_i)\big)c_i$，其中 $\small T(s)$ 表示在 $\small s$ 点之前光线没有被阻碍的概率或者说透过率，$\small\sigma(s)$ 表示在 $\small s$ 点处光线撞击粒子或者说被粒子阻碍的概率，$\small c(s)$ 表示在 $\small s$ 点处粒子发出的颜色，$\small\delta(s)$ 则表示点 $\small s$ 处沿射线离散积分的间距。下面代码的高亮部分对应的就是上述公式。
+
+//// collapse-code
+``` C++ hl_lines="86-102"
+/* submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu */
+// Main rasterization method. Collaboratively works on one tile per block, 
+// each thread treats one pixel. Alternates between fetching and rasterizing data.
+template <uint32_t CHANNELS>
+__global__ void __launch_bounds__(BLOCK_X * BLOCK_Y)
+renderCUDA(
+	const uint2* __restrict__ ranges,
+	const uint32_t* __restrict__ point_list,
+	int W, int H,
+	const float2* __restrict__ points_xy_image,
+	const float* __restrict__ features,
+	const float4* __restrict__ conic_opacity,
+	float* __restrict__ final_T,
+	uint32_t* __restrict__ n_contrib,
+	const float* __restrict__ bg_color,
+	float* __restrict__ out_color,
+	const float* __restrict__ depths,
+	float* __restrict__ invdepth)
+{
+	// Identify current tile and associated min/max pixel range.
+	auto block = cg::this_thread_block();
+	uint32_t horizontal_blocks = (W + BLOCK_X - 1) / BLOCK_X;
+	uint2 pix_min = { block.group_index().x * BLOCK_X, block.group_index().y * BLOCK_Y };
+	uint2 pix_max = { min(pix_min.x + BLOCK_X, W), min(pix_min.y + BLOCK_Y , H) };
+	uint2 pix = { pix_min.x + block.thread_index().x, pix_min.y + block.thread_index().y };
+	uint32_t pix_id = W * pix.y + pix.x;
+	float2 pixf = { (float)pix.x, (float)pix.y };
+
+	// Check if this thread is associated with a valid pixel or outside.
+	bool inside = pix.x < W&& pix.y < H;
+	// Done threads can help with fetching, but don't rasterize
+	bool done = !inside;
+
+	// Load start/end range of IDs to process in bit sorted list.
+	uint2 range = ranges[block.group_index().y * horizontal_blocks + block.group_index().x];
+	const int rounds = ((range.y - range.x + BLOCK_SIZE - 1) / BLOCK_SIZE);
+	int toDo = range.y - range.x;
+
+	// Allocate storage for batches of collectively fetched data.
+	__shared__ int collected_id[BLOCK_SIZE];
+	__shared__ float2 collected_xy[BLOCK_SIZE];
+	__shared__ float4 collected_conic_opacity[BLOCK_SIZE];
+
+	// Initialize helper variables
+	float T = 1.0f;
+	uint32_t contributor = 0;
+	uint32_t last_contributor = 0;
+	float C[CHANNELS] = { 0 };
+
+	float expected_invdepth = 0.0f;
+
+	// Iterate over batches until all done or range is complete
+	for (int i = 0; i < rounds; i++, toDo -= BLOCK_SIZE)
+	{
+		// End if entire block votes that it is done rasterizing
+		int num_done = __syncthreads_count(done);
+		if (num_done == BLOCK_SIZE)
+			break;
+
+		// Collectively fetch per-Gaussian data from global to shared
+		int progress = i * BLOCK_SIZE + block.thread_rank();
+		if (range.x + progress < range.y)
+		{
+			int coll_id = point_list[range.x + progress];
+			collected_id[block.thread_rank()] = coll_id;
+			collected_xy[block.thread_rank()] = points_xy_image[coll_id];
+			collected_conic_opacity[block.thread_rank()] = conic_opacity[coll_id];
+		}
+		block.sync();
+
+		// Iterate over current batch
+		for (int j = 0; !done && j < min(BLOCK_SIZE, toDo); j++)
+		{
+			// Keep track of current position in range
+			contributor++;
+
+			// Resample using conic matrix (cf. "Surface 
+			// Splatting" by Zwicker et al., 2001)
+			float2 xy = collected_xy[j];
+			float2 d = { xy.x - pixf.x, xy.y - pixf.y };
+			float4 con_o = collected_conic_opacity[j];
+			float power = -0.5f * (con_o.x * d.x * d.x + con_o.z * d.y * d.y) - con_o.y * d.x * d.y;
+			if (power > 0.0f)
+				continue;
+
+			// Eq. (2) from 3D Gaussian splatting paper.
+			// Obtain alpha by multiplying with Gaussian opacity
+			// and its exponential falloff from mean.
+			// Avoid numerical instabilities (see paper appendix). 
+			float alpha = min(0.99f, con_o.w * exp(power));
+			if (alpha < 1.0f / 255.0f)
+				continue;
+			float test_T = T * (1 - alpha);
+			if (test_T < 0.0001f)
+			{
+				done = true;
+				continue;
+			}
+
+			// Eq. (3) from 3D Gaussian splatting paper.
+			for (int ch = 0; ch < CHANNELS; ch++)
+				C[ch] += features[collected_id[j] * CHANNELS + ch] * alpha * T;
+
+			if(invdepth)
+			expected_invdepth += (1 / depths[collected_id[j]]) * alpha * T;
+
+			T = test_T;
+
+			// Keep track of last range entry to update this
+			// pixel.
+			last_contributor = contributor;
+		}
+	}
+
+	// All threads that treat valid pixel write out their final
+	// rendering data to the frame and auxiliary buffers.
+	if (inside)
+	{
+		final_T[pix_id] = T;
+		n_contrib[pix_id] = last_contributor;
+		for (int ch = 0; ch < CHANNELS; ch++)
+			out_color[ch * H * W + pix_id] = C[ch] + T * bg_color[ch];
+
+		if (invdepth)
+		invdepth[pix_id] = expected_invdepth;// 1. / (expected_depth + T * 1e3);
+	}
+}
+```
+////
 
 ## 完整流程：机器学习与参数评估
 
-每个点膨胀成的三维高斯椭球参数包括：中心点位置 $\small (x,y,z)$、协方差矩阵 $\small\Sigma=RS$、球谐函数系数矩阵和透明度 $\small\alpha$，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 $\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}$，如下述代码块所示。可以注意到的是，代码 `submodules` 模块下有 `simple-knn` 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免铺不满或者椭球重叠的情况。
+每个点膨胀成的三维高斯椭球参数包括：中心点位置 $\small (x,y,z)$、协方差矩阵 $\small\Sigma=RS$、球谐函数系数矩阵和透明度 $\small\alpha$，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 $\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}$，如下述代码块所示（可以注意到代码中还计算了深度正则化损失来引导高斯椭球的几何分布与单目先验深度估计保持一致，而采用逆深度图则是因为近处的深度估计更为准确）。可以注意到的是，代码 `submodules` 模块下有 `simple-knn` 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免铺不满或者椭球过度重叠的情况。
 
 //// collapse-code
 ``` Python hl_lines="12"
@@ -224,14 +356,36 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
 		ssim_value = ssim(image, gt_image)
 
 	loss = (1.0 - opt.lambda_dssim) * Ll1 + opt.lambda_dssim * (1.0 - ssim_value)
+
+	# Depth regularization
+	Ll1depth_pure = 0.0
+	if depth_l1_weight(iteration) > 0 and viewpoint_cam.depth_reliable:
+		invDepth = render_pkg["depth"]
+		mono_invdepth = viewpoint_cam.invdepthmap.cuda()
+		depth_mask = viewpoint_cam.depth_mask.cuda()
+
+		Ll1depth_pure = torch.abs((invDepth  - mono_invdepth) * depth_mask).mean()
+		Ll1depth = depth_l1_weight(iteration) * Ll1depth_pure
+		loss += Ll1depth
+		Ll1depth = Ll1depth.item()
+	else:
+		Ll1depth = 0
+
+	loss.backward()
 ```
 ////
 
-但是如果只对 colmap 生成的初始点云作优化的话，那么后续不管如何优化高斯椭球的数量都是不变的，这使得算法强依赖于 SfM 的初始化，所以 3DGS 提出了自适应密度控制与优化，即对透明的高斯分布作周期性滤除或者说剔除存在感太低的高斯椭球，同时，对于 under-reconstruction 的区域，克隆高斯并沿着梯度方向移动以覆盖几何体；对于 over-reconstruction 的区域则拆分高斯以更好地拟合细粒度细节。可以发现，机器学习的部分非常简单且不涉及深度学习的知识，3DGS 的难度主要在于大量计算机图形学的理解和 GPU 的高性能编程。
+但是如果只对 colmap 生成的初始点云作优化的话，那么后续不管如何优化高斯椭球的数量都是不变的，这使得算法强依赖于 SfM 的初始化，所以 3DGS 提出了自适应密度控制与优化，即对透明的高斯分布作周期性滤除或者说剔除存在感太低的高斯椭球，同时，对于 under-reconstruction 的区域，克隆高斯并沿着梯度方向移动以覆盖几何体；对于 over-reconstruction 的区域则拆分高斯以更好地拟合细粒度细节。可以发现，机器学习的部分非常简单且不涉及深度学习的知识，3DGS 的难度主要在于对计算机图形学的理解和 GPU 的高性能编程。
 
 ![](./overview_of_3DGS.png){ width=100% style="display: block; margin: 0 auto;" }
 
 ## 代码运行： Ubuntu 20.04
+
+```
+conda env create --file environment.yml && conda activate gaussian_splatting
+```
+
+运行 `python train.py --help` 指令可以获得其支持的命令行参数，从终端输出 `--source_path SOURCE_PATH, -s SOURCE_PATH` 可以看出 `-s` 对应的是源数据路径
 
 ```
 python train.py -s data/truck/ -m data/truck/output
