@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../../3DGS/">
+        <link rel="prev" href="../../gaussian-splatting/">
       
       
       
@@ -18,7 +18,7 @@
     
     
       
-        <title>SplaTAM - 3DGS based SLAM | Material Collection</title>
+        <title>SplaTAM：Splat, Track & Map - 3DGS based SLAM | Material Collection</title>
       
     
     
@@ -85,6 +85,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#splatamsplat-track--map" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -116,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              SplaTAM
+              SplaTAM：Splat, Track & Map
             
           </span>
         </div>
@@ -231,7 +236,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../3DGS/" class="md-tabs__link">
+        <a href="../../gaussian-splatting/" class="md-tabs__link">
           
   
     
@@ -374,7 +379,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../3DGS/" class="md-nav__link">
+      <a href="../../gaussian-splatting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -450,16 +455,66 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    SplaTAM：Splat, Track & Map
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    SplaTAM
+    SplaTAM：Splat, Track & Map
   </span>
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#相机跟踪" class="md-nav__link">
+    <span class="md-ellipsis">
+      相机跟踪
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#代码运行ubuntu2004" class="md-nav__link">
+    <span class="md-ellipsis">
+      代码运行：Ubuntu20.04
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -499,9 +554,72 @@
   
 
 
-  <h1>SplaTAM</h1>
-
-
+<h1 id="splatamsplat-track--map">SplaTAM：Splat, Track &amp; Map<a class="headerlink" href="#splatamsplat-track--map" title="Permanent link">&para;</a></h1>
+<p>毕竟是首篇开源的 3DGS-SLAM 论文，SplaTAM<a href="#SplaTAM-paper"><sup>[1]</sup></a> 依然在 Nerf 隐式和 3DGS 显式快速建图的语境下谈高保真的场景重建 —— 隐式神经场表示面临计算效率低、不易编辑、不能明确模拟空间几何特征和灾难性遗忘的问题，那么与之相对的，SplaTAM 自然要回答如何在 SLAM 中嵌入 3DGS 技术：</p>
+<blockquote>
+<p>In this context, we explore the question, “How can one use an explicit volumetric representation to design a SLAM solution?” Specifically, we use a radiance field based on 3D Gaussians [14] to Splat (Render), Track, and Map for SLAM. We believe that this representation has the following benefits over existing map representations:</p>
+</blockquote>
+<ol>
+<li>
+<p>Fast rendering and rich optimization：高斯泼溅的一大优势就是可以以高达 400 FPS 的速度渲染，而 SplaTAM 进一步去除了椭球外观对观测视角的依赖及其各向异性，即将球谐函数系数矩阵简化为 RGB 值 <span class="arithmatex">\(\small c\in\mathbb{R}^3\)</span>，将协方差矩阵简化为球半径 <span class="arithmatex">\(\small r\)</span>，从而得到高斯椭球的简化表示 <span class="arithmatex">\(\small f(x)=o\exp(-||x-\mu||^2/2r^2)\)</span>，其中 <span class="arithmatex">\(\small\mu\in\mathbb{R}^3\)</span> 为高斯球均，<span class="arithmatex">\(\small o\in[0,1]\)</span>表示不透明度</p>
+</li>
+<li>
+<p>地图具有明确空间范围, 并可轻松控制现有地图的空间边界. 而这对于隐式地图而言是困难的, 因为在针对为建图空间进行基于梯度的优化过程中, 网络的变化是全局的. 同时, 地图构建是显式的, 我们可以通过简单地添加更多的高斯椭球来增加地图容量, 这种显式的体积表示允许我们编辑部分场景时保持照片级的真实感渲染.</p>
+</li>
+<li>
+<p>Explicit map</p>
+</li>
+<li>
+<p>到参数的直接梯度流: 由于场景由具有物理3D位置、颜色和大小的高斯表示, 因此参数和渲染之间存在直接的、几乎线型的梯度流. 而隐式神经表示的优化则需要流经多层非线性网络层.</p>
+</li>
+</ol>
+<p><img alt="" src="../SplaTAM.png" style="display: block; margin: 0 auto;" width="100%" /></p>
+<h2 id="相机跟踪">相机跟踪<a class="headerlink" href="#相机跟踪" title="Permanent link">&para;</a></h2>
+<p>使用常速度模型 <span class="arithmatex">\(\small E_{t+1} = E_t + (E_t-E_{t-1})\)</span> 初始化相机姿态</p>
+<div class="collapse-code"><input checked="checked" id="__collapse0" name="__collapse0" type="checkbox" /><div class="language-Python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="sd">&#39;&#39;&#39; scripts/spatam.py &#39;&#39;&#39;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">rgbd_slam</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">...</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="c1"># Initialize the camera pose for the current frame</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="k">if</span> <span class="n">time_idx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>            <span class="n">params</span> <span class="o">=</span> <span class="n">initialize_camera_pose</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">time_idx</span><span class="p">,</span> <span class="n">forward_prop</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;tracking&#39;</span><span class="p">][</span><span class="s1">&#39;forward_prop&#39;</span><span class="p">])</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="hll"><span class="k">def</span><span class="w"> </span><span class="nf">initialize_camera_pose</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">curr_time_idx</span><span class="p">,</span> <span class="n">forward_prop</span><span class="p">):</span>
+</span></span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="k">if</span> <span class="n">curr_time_idx</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">forward_prop</span><span class="p">:</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>            <span class="c1"># Initialize the camera pose for the current frame based on a constant velocity model</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>            <span class="c1"># Rotation</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>            <span class="n">prev_rot1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;cam_unnorm_rots&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">,</span> <span class="n">curr_time_idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>            <span class="n">prev_rot2</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;cam_unnorm_rots&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">,</span> <span class="n">curr_time_idx</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>            <span class="n">new_rot</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">prev_rot1</span> <span class="o">+</span> <span class="p">(</span><span class="n">prev_rot1</span> <span class="o">-</span> <span class="n">prev_rot2</span><span class="p">))</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;cam_unnorm_rots&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">,</span> <span class="n">curr_time_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_rot</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>            <span class="c1"># Translation</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>            <span class="n">prev_tran1</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;cam_trans&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">,</span> <span class="n">curr_time_idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>            <span class="n">prev_tran2</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;cam_trans&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">,</span> <span class="n">curr_time_idx</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>            <span class="n">new_tran</span> <span class="o">=</span> <span class="n">prev_tran1</span> <span class="o">+</span> <span class="p">(</span><span class="n">prev_tran1</span> <span class="o">-</span> <span class="n">prev_tran2</span><span class="p">)</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;cam_trans&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">,</span> <span class="n">curr_time_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_tran</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>            <span class="c1"># Initialize the camera pose for the current frame</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;cam_unnorm_rots&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">,</span> <span class="n">curr_time_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;cam_unnorm_rots&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">,</span> <span class="n">curr_time_idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;cam_trans&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">,</span> <span class="n">curr_time_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;cam_trans&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">,</span> <span class="n">curr_time_idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="k">return</span> <span class="n">params</span>
+</span></code></pre></div>
+<div class="code-footer"><label class="expand" for="__collapse0" tabindex="0" title="expand"></label><label class="collapse" for="__collapse0" tabindex="0" title="collapse"></label></div>
+</div>
+<h2 id="代码运行ubuntu2004">代码运行：Ubuntu20.04<a class="headerlink" href="#代码运行ubuntu2004" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>conda create -n splatam python=3.10
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>conda activate splatam
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>conda install -c &quot;nvidia/label/cuda-11.6.0&quot; cuda-toolkit
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.6 -c pytorch -c conda-forge
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>pip install -r requirements.txt
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python scripts/splatam.py configs/tum/splatam.py
+</span></code></pre></div>
+<p>&nbsp;</p>
+<div id="SplaTAM-paper"></div>
+<p>[1] <a href="https://spla-tam.github.io/">Keetha N, Karhade J, Jatavallabhula K M, et al. Splatam: Splat track &amp; map 3d gaussians for dense rgb-d slam[C]//Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2024: 21357-21366.</a></p>
 
 
 
@@ -533,7 +651,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../3DGS/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3D Gaussian Splatting">
+          <a href="../../gaussian-splatting/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3D Gaussian Splatting">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -604,7 +722,7 @@
       
         <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>
