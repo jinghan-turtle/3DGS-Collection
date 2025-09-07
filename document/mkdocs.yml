@@ -36,9 +36,10 @@ theme:
     - navigation.indexes
     # - navigation.top
     - navigation.footer
+    - navigation.prune    # Render only visible items
 
     - toc.follow
-    - toc.integrate
+    - toc.integrate  # Merge with sidebar
 
   palette:
     - media: "(prefers-color-scheme: light)"
@@ -51,7 +52,7 @@ nav:
   - 3DGS: 
     - 3D Gaussian Splatting: src/3DGS/gaussian-splatting.md
     - 3DGS-based RGB-D SLAM:
-      - SplaTAM: src/3DGS/3DGS-based_RGB-D_SLAM/SplaTAM.md
+      - SplaTAM：Splat, Track & Map: src/3DGS/3DGS-based_RGB-D_SLAM/SplaTAM.md
 
 
 markdown_extensions: 

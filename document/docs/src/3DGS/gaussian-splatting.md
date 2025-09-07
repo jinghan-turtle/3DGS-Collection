@@ -19,7 +19,7 @@ $$
 y = Wx+b = RSx+b,\thinspace\thinspace x\sim N(\mu,\Sigma) \thinspace\thinspace\thinspace\thinspace\thinspace\Longrightarrow\thinspace\thinspace\thinspace\thinspace\thinspace y\sim N(W\mu+b, W\Sigma W^T) = N(W\mu+b, RS\Sigma S^TR^T)
 $$
 
-特别地，当 $\small x$ 服从标准正态分布时，仿射变换得到的协方差矩阵为 $\small RSS^TR^T$；反过来，给定协方差矩阵 $\small\Sigma$，我们可以通过特征值分解得到 $\small R$ 和 $\small S$，即 $\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T:=RSS^TR^T$。下面的 `computeCov3D` 函数讲的就是这个仿射变换，传入的三维向量 `scale` 即为上述公式中的 $\small x$， `cov3D` 则用于存储协方差矩阵，只是传入的四元数 `rot4` 使得代码多了一个计算旋转矩阵的过程。
+特别地，当 $\small x$ 服从标准正态分布时，仿射变换得到的协方差矩阵为 $\small RSS^TR^T$；反过来，给定协方差矩阵 $\small\Sigma$，我们可以通过特征值分解得到 $\small R$ 和 $\small S$，即 $\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T:=RSS^TR^T$ (由此可知存储一个协方差矩阵需要七个参数，即四元数和三个缩放参数)。下面的 `computeCov3D` 函数就在讲这个仿射变换，传入的三维向量 `scale` 即为上述公式中的 $\small x$， `cov3D` 则表示协方差矩阵，只是传入的四元数 `rot4` 使得代码多了一个计算旋转矩阵的过程。
 
 //// collapse-code
 ```C++ hl_lines="26-29"
@@ -143,7 +143,7 @@ __device__ float3 computeCov2D(const float3& mean, float focal_x, float focal_y,
 
 ## 雪球颜色和像素着色：球谐函数
 
-通过上述过程，我们已经捏好了雪球，也想好如何把雪球往墙上砸了，但雪球不一定是白色的——3DGS 利用球谐函数 $\small\sum_l\sum_{m=-l}^l c_l^my_l^m(\theta,\phi)$ 来表达高斯椭球的颜色。相比 RGB（对应于零阶球谐函数），高阶球谐函数给出了更为逼真的环境贴图和亮度重建效果，使得椭球呈现的颜色与观测方向相关——直觉上讲球谐函数包含了更为丰富的信息，比如三阶球谐函数所包含的信息维度达到了 $\small (1+3+5+7)\times 3$。下面代码传入的参数 `deg` 即为球谐函数的阶数，`glm::vec3 result = SH_C0 * sh[0]` 便是在算第零阶的元素，后续则是按公式分别计算不同阶次的球谐函数值。
+通过上述过程，我们已经捏好了雪球，也想好如何把雪球往墙上砸了，但雪球不一定是白色的 —— 3DGS 利用球谐函数 $\small\sum_l\sum_{m=-l}^l c_l^my_l^m(\theta,\phi)$ 来表达高斯椭球的颜色。相比 RGB 信息（对应于零阶球谐函数），高阶球谐函数给出了更为逼真的环境贴图和亮度重建效果，使得椭球呈现的颜色与观测方向相关 —— 直觉上讲球谐函数包含了更为丰富的信息，比如三阶球谐函数所包含的信息量达到了 $\small (1+3+5+7)\times 3$。下面代码传入的参数 `deg` 即为球谐函数的阶数，`glm::vec3 result = SH_C0 * sh[0]` 便是在算第零阶的元素，后续则按公式分别计算不同阶次的球谐函数值。
 
 //// collapse-code
 ``` C++
@@ -340,7 +340,7 @@ renderCUDA(
 
 ## 完整流程：机器学习与参数评估
 
-每个点膨胀成的三维高斯椭球参数包括：中心点位置 $\small (x,y,z)$、协方差矩阵 $\small\Sigma=RS$、球谐函数系数矩阵和透明度 $\small\alpha$，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 $\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}$，如下述代码块所示（可以注意到代码中还计算了深度正则化损失来引导高斯椭球的几何分布与单目先验深度估计保持一致，而采用逆深度图则是因为近处的深度估计更为准确）。可以注意到的是，代码 `submodules` 模块下有 `simple-knn` 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免铺不满或者椭球过度重叠的情况。
+每个点膨胀成的三维高斯椭球参数包括中心点位置 $\small (x,y,z)$、协方差矩阵 $\small\Sigma=RS$、球谐函数系数矩阵和透明度 $\small\alpha$，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 $\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}$，如下述代码块所示（可以注意到代码中还计算了深度正则化损失来引导高斯椭球的几何分布与单目先验深度估计保持一致，而采用逆深度图则是因为近处的深度估计更为准确）。可以注意到的是，代码 `submodules` 模块下有 `simple-knn` 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免铺不满或者椭球过度重叠的情况。
 
 //// collapse-code
 ``` Python hl_lines="12"
@@ -379,7 +379,7 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
 
 ![](./overview_of_3DGS.png){ width=100% style="display: block; margin: 0 auto;" }
 
-## 代码运行： Ubuntu 20.04
+## 代码运行： Ubuntu 20.04 & Cuda 11.8
 
 ```
 conda env create --file environment.yml && conda activate gaussian_splatting
@@ -391,7 +391,7 @@ conda env create --file environment.yml && conda activate gaussian_splatting
 python train.py -s data/truck/ -m data/truck/output
 ```
 
-
+&nbsp;
 
 <div id="3DGS-paper"></div>
 [1] [Kerbl B, Kopanas G, Leimkühler T, et al. 3D Gaussian splatting for real-time radiance field rendering[J]. ACM Trans. Graph., 2023, 42(4): 139:1-139:14.](https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/)
