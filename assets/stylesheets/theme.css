@@ -30,3 +30,8 @@
 .md-typeset pre {
     line-height: 1.65;
 }
+
+/* modify the page width */
+.md-grid {
+  max-width: 1610px;
+}
