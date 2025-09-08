@@ -1,3 +1,4 @@
+<!-- docs/overrides/main.html -->
 
 <!doctype html>
 <html lang="en" class="no-js">
@@ -9,13 +10,13 @@
       
       
       
-        <link rel="prev" href="../../..">
+        <link rel="prev" href="../../../Home/paper-list/">
       
       
-        <link rel="next" href="../3DGS-based_RGB-D_SLAM/SplaTAM/">
+        <link rel="next" href="../../3DGS-based_RGB-D_SLAM/Gaussian-Splatting-SLAM/">
       
       
-      <link rel="icon" href="../../../assets/images/3D-Gaussians.png">
+      <link rel="icon" href="../../../../assets/images/3D-Gaussians.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
     
     
@@ -24,18 +25,27 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.a40c8224.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.a40c8224.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
 
     
     
+  
       
     
+  <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tables = document.querySelectorAll("article table:not([class])");
+      tables.forEach(table => new Tablesort(table));
+    });
+  </script>
+
     
       
         
@@ -46,15 +56,17 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/code.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/code.css">
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/theme.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/theme.css">
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/search.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/search.css">
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/navigation.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/navigation.css">
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/collapse-code.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/collapse-code.css">
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/tables-lists.css">
     
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
     
@@ -62,7 +74,7 @@
     
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap">
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -106,7 +118,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="https://jinghan-turtle.github.io/3DGS-Collection/" title="3DGS based SLAM | Material Collection" class="md-header__button md-logo" aria-label="3DGS based SLAM | Material Collection" data-md-component="logo">
       
-  <img src="../../../assets/images/3D-Gaussians.png" alt="logo">
+  <img src="../../../../assets/images/3D-Gaussians.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -216,16 +228,19 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../.." class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../.." class="md-tabs__link">
+          
   
     
   
   Home
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -283,7 +298,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="https://jinghan-turtle.github.io/3DGS-Collection/" title="3DGS based SLAM | Material Collection" class="md-nav__button md-logo" aria-label="3DGS based SLAM | Material Collection" data-md-component="logo">
       
-  <img src="../../../assets/images/3D-Gaussians.png" alt="logo">
+  <img src="../../../../assets/images/3D-Gaussians.png" alt="logo">
 
     </a>
     3DGS based SLAM | Material Collection
@@ -309,16 +324,48 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../.." class="md-nav__link">
+      
   
   <span class="md-ellipsis">
     Home
   </span>
   
 
-      </a>
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
     </li>
   
 
@@ -493,6 +540,8 @@
       
         
       
+        
+      
     
     
       
@@ -540,7 +589,28 @@
   
   
     <li class="md-nav__item">
-      <a href="../3DGS-based_RGB-D_SLAM/SplaTAM/" class="md-nav__link">
+      <a href="../../3DGS-based_RGB-D_SLAM/Gaussian-Splatting-SLAM/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Gaussian Splatting SLAM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../3DGS-based_RGB-D_SLAM/SplaTAM/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -588,7 +658,7 @@
 
 
 <h1 id="3d-gaussian-splatting">3D Gaussian Splatting<a class="headerlink" href="#3d-gaussian-splatting" title="Permanent link">&para;</a></h1>
-<p>3DGS<a href="#3DGS-paper"><sup>[1]</sup></a> 是基于 Splatting 和机器学习的三维重建方法。其中 Splat 是拟声词，意为“啪叽一声”：我们可以想象三维场景重建的输入是一些雪球，图片是一面砖墙，图像生成过程就是向墙面扔雪球的过程；每扔一个雪球，墙面上会留有印记，同时伴有啪叽一声，所以这个算法也被称为抛雪球法，翻译成“喷溅”也很有灵性。简单地说，splatting 的核心有三步：一是选择“雪球”，也就是说我要将它捏成一个什么形状的雪球；二是去抛掷雪球，将高斯椭球从 3D 投影到 2D，得到很多个印记；三是合成这些印记以形成最后的图像<a href="#refer-anchor-2"><sup>[2]</sup></a>。</p>
+<p>3DGS<a href="#3DGS-paper"><sup>[1]</sup></a> 是基于 Splatting 和机器学习的三维重建方法。其中 Splat 是拟声词，意为“啪叽一声”：我们可以想象三维场景重建的输入是一些雪球，图片是一面砖墙，图像生成过程就是向墙面扔雪球的过程；每扔一个雪球，墙面上会留有印记，同时伴有啪叽一声，所以这个算法也被称为抛雪球法，翻译成“喷溅”也很有灵性。简单来说，splatting 的核心有三步：一是选择“雪球”，也就是说我要将它捏成一个什么形状的雪球；二是去抛掷雪球，将高斯椭球从 3D 投影到 2D，得到很多个印记；三是合成这些印记以形成最后的图像<a href="#refer-anchor-2"><sup>[2]</sup></a>。</p>
 <h2 id="捏雪球用协方差控制椭球形状">捏雪球：用协方差控制椭球形状<a class="headerlink" href="#捏雪球用协方差控制椭球形状" title="Permanent link">&para;</a></h2>
 <p>3DGS 的输入是 SfM 得到的稀疏点云，而由于点是没有体积的，我们首先需要将点膨胀成正方体、球体或者其他基础的三维几何形状。之所以选择高斯分布作为椭球，则是因为它良好的数学性质，比如高斯分布在仿射变换后依然是高斯分布，而沿着某个轴积分将高斯分布从 3D 降到 2D 后其依然服从高斯分布。高斯分布的数学描述如下：</p>
 <div class="arithmatex">\[
@@ -937,7 +1007,7 @@ $$ -->
 </span></code></pre></div>
 <div class="code-footer"><label class="expand" for="__collapse4" tabindex="0" title="expand"></label><label class="collapse" for="__collapse4" tabindex="0" title="collapse"></label></div>
 </div>
-<p>但是如果只对 colmap 生成的初始点云作优化的话，那么后续不管如何优化高斯椭球的数量都是不变的，这使得算法强依赖于 SfM 的初始化，所以 3DGS 提出了自适应密度控制与优化，即对透明的高斯分布作周期性滤除或者说剔除存在感太低的高斯椭球，同时，对于 under-reconstruction 的区域，克隆高斯并沿着梯度方向移动以覆盖几何体；对于 over-reconstruction 的区域则拆分高斯以更好地拟合细粒度细节。可以发现，机器学习的部分非常简单且不涉及深度学习的知识，3DGS 的难度主要在于对计算机图形学的理解和 GPU 的高性能编程。</p>
+<p>但是如果只对 colmap 生成的初始点云作优化的话，那么后续不管如何优化高斯椭球的数量都是不变的，这使得算法强依赖于 SfM 的初始化，所以 3DGS 提出了自适应密度控制与优化，即对透明的高斯分布作周期性滤除或者说剔除存在感太低的高斯椭球，同时，对于 under-reconstruction 的区域，克隆高斯并沿着梯度方向移动以覆盖几何体；对于 over-reconstruction 的区域则拆分高斯以更好地拟合细粒度细节。可以发现，机器学习的部分非常简单且不涉及深度学习的知识，3DGS 的难度主要在于对计算机图形学的理解和 GPU 的高性能编程。3DGS 这部分的伪代码见论文的附录 B. Optimization and Densification Algorithm。</p>
 <p><img alt="" src="../overview_of_3DGS.png" style="display: block; margin: 0 auto;" width="100%" /></p>
 <h2 id="代码运行-ubuntu-2004--cuda-118">代码运行： Ubuntu 20.04 &amp; Cuda 11.8<a class="headerlink" href="#代码运行-ubuntu-2004--cuda-118" title="Permanent link">&para;</a></h2>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>conda env create --file environment.yml &amp;&amp; conda activate gaussian_splatting
@@ -981,7 +1051,7 @@ $$ -->
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
+          <a href="../../../Home/paper-list/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Paper List">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -991,20 +1061,20 @@ $$ -->
                 Previous
               </span>
               <div class="md-ellipsis">
-                Home
+                Paper List
               </div>
             </div>
           </a>
         
         
           
-          <a href="../3DGS-based_RGB-D_SLAM/SplaTAM/" class="md-footer__link md-footer__link--next" aria-label="Next: SplaTAM：Splat, Track &amp; Map">
+          <a href="../../3DGS-based_RGB-D_SLAM/Gaussian-Splatting-SLAM/" class="md-footer__link md-footer__link--next" aria-label="Next: Gaussian Splatting SLAM">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                SplaTAM：Splat, Track & Map
+                Gaussian Splatting SLAM
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1059,12 +1129,12 @@ $$ -->
       <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["announce.dismiss", "content.tooltips", "content.tabs.link", "content.code.copy", "content.code.select", "content.code.annotate", "search.suggest", "search.highlight", "search.share", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "navigation.footer", "navigation.prune", "toc.follow", "toc.integrate"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["announce.dismiss", "content.tooltips", "content.tabs.link", "content.code.copy", "content.code.select", "content.code.annotate", "search.suggest", "search.highlight", "search.share", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "navigation.footer", "navigation.prune", "toc.follow", "toc.integrate"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.60a45f97.min.js"></script>
       
-        <script src="../../../assets/javascripts/mathjax.js"></script>
+        <script src="../../../../assets/javascripts/mathjax.js"></script>
       
         <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       

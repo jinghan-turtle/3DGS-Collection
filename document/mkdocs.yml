@@ -8,6 +8,7 @@ theme:
   name: material
   logo: assets/images/3D-Gaussians.png
   favicon: assets/images/3D-Gaussians.png
+  custom_dir: overrides
 
   features:
     - announce.dismiss
@@ -48,12 +49,15 @@ theme:
 
 
 nav:
-  - Home: index.md
+  - Summary:
+    - SLAM Comparision: index.md
+    - 3DGS-SLAM Paper List: src/Home/paper-list.md
   - 3DGS: 
     - 3D Gaussian Splatting: src/3DGS/gaussian-splatting/gaussian-splatting.md
-    - 3DGS-based RGB-D SLAM:
-      - Gaussian Splatting SLAM: src/3DGS/3DGS-based_RGB-D_SLAM/Gaussian-Splatting-SLAM.md
-      - SplaTAM：Splat, Track & Map: src/3DGS/3DGS-based_RGB-D_SLAM/SplaTAM.md
+    - 3DGS-based Visual SLAM:
+      - Gaussian Splatting SLAM: src/3DGS/3DGS-based_Visual_SLAM/Gaussian-Splatting-SLAM.md
+      - SplaTAM：Splat, Track & Map: src/3DGS/3DGS-based_Visual_SLAM/SplaTAM.md
+      - Photo-SLAM：Real-time: src/3DGS/3DGS-based_Visual_SLAM/Photo-SLAM.md
 
 
 markdown_extensions: 
@@ -141,6 +145,7 @@ extra_css:
   - assets/stylesheets/search.css
   - assets/stylesheets/navigation.css
   - assets/stylesheets/collapse-code.css
+  - assets/stylesheets/tables-lists.css
   - https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap
   - https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&display=swap
   - https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap

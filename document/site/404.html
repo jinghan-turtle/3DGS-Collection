@@ -1,3 +1,4 @@
+<!-- docs/overrides/main.html -->
 
 <!doctype html>
 <html lang="en" class="no-js">
@@ -30,8 +31,17 @@
 
     
     
+  
       
     
+  <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tables = document.querySelectorAll("article table:not([class])");
+      tables.forEach(table => new Tablesort(table));
+    });
+  </script>
+
     
       
         
@@ -51,6 +61,8 @@
       <link rel="stylesheet" href="/assets/stylesheets/navigation.css">
     
       <link rel="stylesheet" href="/assets/stylesheets/collapse-code.css">
+    
+      <link rel="stylesheet" href="/assets/stylesheets/tables-lists.css">
     
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
     
@@ -207,16 +219,19 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="/." class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="/." class="md-tabs__link">
+          
   
     
   
   Home
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -227,7 +242,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/src/3DGS/gaussian-splatting/" class="md-tabs__link">
+        <a href="/src/3DGS/gaussian-splatting/gaussian-splatting/" class="md-tabs__link">
           
   
     
@@ -298,16 +313,48 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="/." class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="/." class="md-nav__link">
+      
   
   <span class="md-ellipsis">
     Home
   </span>
   
 
-      </a>
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
     </li>
   
 
@@ -343,7 +390,7 @@
         
   
   
-    <a href="/src/3DGS/gaussian-splatting/" class="md-nav__link">
+    <a href="/src/3DGS/gaussian-splatting/gaussian-splatting/" class="md-nav__link">
       
   
   <span class="md-ellipsis">
