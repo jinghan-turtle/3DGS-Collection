@@ -50,8 +50,9 @@ theme:
 nav:
   - Home: index.md
   - 3DGS: 
-    - 3D Gaussian Splatting: src/3DGS/gaussian-splatting.md
+    - 3D Gaussian Splatting: src/3DGS/gaussian-splatting/gaussian-splatting.md
     - 3DGS-based RGB-D SLAM:
+      - Gaussian Splatting SLAM: src/3DGS/3DGS-based_RGB-D_SLAM/Gaussian-Splatting-SLAM.md
       - SplaTAM：Splat, Track & Map: src/3DGS/3DGS-based_RGB-D_SLAM/SplaTAM.md
 
 
