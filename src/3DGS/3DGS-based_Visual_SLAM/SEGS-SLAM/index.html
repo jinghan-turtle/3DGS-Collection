@@ -10,10 +10,10 @@
       
       
       
-        <link rel="prev" href="../../gaussian-splatting/gaussian-splatting/">
+        <link rel="prev" href="../GS-ICP-SLAM/">
       
       
-        <link rel="next" href="../SplaTAM/">
+        <link rel="next" href="../../3DGS-based_Dynamic_SLAM/4D-Gaussian-Splatting-SLAM/">
       
       
       <link rel="icon" href="../../../../assets/images/3D-Gaussians.png">
@@ -21,7 +21,7 @@
     
     
       
-        <title>Gaussian Splatting SLAM - 3DGS based SLAM | Material Collection</title>
+        <title>SEGS-SLAM - 3DGS based SLAM | Material Collection</title>
       
     
     
@@ -100,7 +100,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#gaussian-splatting-slam" class="md-skip">
+        <a href="#segs-slam-sota" class="md-skip">
           Skip to content
         </a>
       
@@ -135,7 +135,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Gaussian Splatting SLAM
+              SEGS-SLAM
             
           </span>
         </div>
@@ -513,19 +513,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../Gaussian-Splatting-SLAM/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -534,7 +525,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -607,10 +597,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../SEGS-SLAM/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -619,6 +618,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -897,8 +897,10 @@
   
 
 
-<h1 id="gaussian-splatting-slam">Gaussian Splatting SLAM<a class="headerlink" href="#gaussian-splatting-slam" title="Permanent link">&para;</a></h1>
-<p>CVPR 2024 (Highlight &amp; Best Demo Award)</p>
+<h1 id="segs-slam-sota">SEGS-SLAM: SOTA<a class="headerlink" href="#segs-slam-sota" title="Permanent link">&para;</a></h1>
+<p>大多数基于 3D-GS 的 SLAM 算法忽略了场景中潜在的结构信息，从而限制了其渲染质量。尽管已有部分方法尝试改进精度、效率与语义信息，但对结构的利用仍然不足。例如，如图 1 第二行所示，MonoGS 在重建梯子结构时呈现出明显混乱的结构，这正是缺乏结构建模的结果。相较之下，少数方法如 Photo-SLAM 利用了场景结构。Photo-SLAM 使用间接视觉 SLAM 获得的点云初始化 3D 高斯，并引入了几何密化模块。在原始 3D-GS 中，3D 高斯是从 COLMAP 点中初始化的，而间接视觉 SLAM 与 COLMAP 拥有相似的流程，因此两者生成的点云具有相近的内在属性。因此，Photo-SLAM 的 3D 高斯能以较少迭代次数收敛到相对较优的结果，但它依然没有充分利用场景结构。如图 1 第二行所示，Photo-SLAM 对鼠标边缘的重建仍显模糊。</p>
+<p><img alt="" src="../SEGS-SLAM-Performance.png" style="display: block; margin: 0 auto;" width="100%" /></p>
+<p><img alt="" src="../SEGS-SLAM-Overview.png" style="display: block; margin: 0 auto;" width="100%" /></p>
 
 
 
@@ -930,7 +932,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../gaussian-splatting/gaussian-splatting/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3D Gaussian Splatting">
+          <a href="../GS-ICP-SLAM/" class="md-footer__link md-footer__link--prev" aria-label="Previous: GS-ICP SLAM">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -940,20 +942,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                3D Gaussian Splatting
+                GS-ICP SLAM
               </div>
             </div>
           </a>
         
         
           
-          <a href="../SplaTAM/" class="md-footer__link md-footer__link--next" aria-label="Next: SplaTAM">
+          <a href="../../3DGS-based_Dynamic_SLAM/4D-Gaussian-Splatting-SLAM/" class="md-footer__link md-footer__link--next" aria-label="Next: 4D Gaussian Splatting SLAM">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                SplaTAM
+                4D Gaussian Splatting SLAM
               </div>
             </div>
             <div class="md-footer__button md-icon">
