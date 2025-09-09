@@ -10,10 +10,10 @@
       
       
       
-        <link rel="prev" href="../../gaussian-splatting/gaussian-splatting/">
+        <link rel="prev" href="../SplaTAM/">
       
       
-        <link rel="next" href="../SplaTAM/">
+        <link rel="next" href="../GS-ICP-SLAM/">
       
       
       <link rel="icon" href="../../../../assets/images/3D-Gaussians.png">
@@ -21,7 +21,7 @@
     
     
       
-        <title>Gaussian Splatting SLAM - 3DGS based SLAM | Material Collection</title>
+        <title>Photo-SLAM - 3DGS based SLAM | Material Collection</title>
       
     
     
@@ -100,7 +100,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#gaussian-splatting-slam" class="md-skip">
+        <a href="#photo-slam-monocular-stereo-and-rgb-d" class="md-skip">
           Skip to content
         </a>
       
@@ -135,7 +135,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Gaussian Splatting SLAM
+              Photo-SLAM
             
           </span>
         </div>
@@ -236,7 +236,7 @@
   
     
   
-  Home
+  Summary
 
         </a>
       </li>
@@ -355,7 +355,7 @@
       
   
   <span class="md-ellipsis">
-    Home
+    Summary
   </span>
   
 
@@ -380,6 +380,12 @@
   
     
     
+      
+        
+      
+        
+      
+        
       
         
       
@@ -459,6 +465,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
       
@@ -483,7 +495,7 @@
             
   
   <span class="md-ellipsis">
-    3DGS-based RGB-D SLAM
+    Visual SLAM
   </span>
   
 
@@ -493,9 +505,51 @@
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
-            3DGS-based RGB-D SLAM
+            Visual SLAM
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gaussian-Splatting-SLAM/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Gaussian Splatting SLAM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SplaTAM/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SplaTAM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -513,15 +567,90 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Photo-SLAM
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    Gaussian Splatting SLAM
+    Photo-SLAM
   </span>
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#hyper-primitives-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hyper Primitives Map
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#localization-and-geometry-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Localization and Geometry Mapping
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#photorealistic-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Photorealistic Mapping
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gaussian-pyramid-based-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gaussian-Pyramid-Based Learning
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loop-closure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Loop Closure
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -535,11 +664,272 @@
   
   
     <li class="md-nav__item">
-      <a href="../SplaTAM/" class="md-nav__link">
+      <a href="../GS-ICP-SLAM/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    SplaTAM：Splat, Track & Map
+    GS-ICP SLAM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SEGS-SLAM/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SEGS-SLAM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Dynamic SLAM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Dynamic SLAM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../3DGS-based_Dynamic_SLAM/4D-Gaussian-Splatting-SLAM/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    4D Gaussian Splatting SLAM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Semantic SLAM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Semantic SLAM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../3DGS-based_Semantic_SLAM/SGS-SLAM/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SGS SLAM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Outdoor SLAM
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            Outdoor SLAM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../3DGS-based_Outdoor_SLAM/OpenGS-SLAM/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenGS SLAM
   </span>
   
 
@@ -582,7 +972,40 @@
   
 
 
-<h1 id="gaussian-splatting-slam">Gaussian Splatting SLAM<a class="headerlink" href="#gaussian-splatting-slam" title="Permanent link">&para;</a></h1>
+<h1 id="photo-slam-monocular-stereo-and-rgb-d">Photo-SLAM: Monocular, Stereo, and RGB-D<a class="headerlink" href="#photo-slam-monocular-stereo-and-rgb-d" title="Permanent link">&para;</a></h1>
+<p>Nerf 神经辐射场对场景的隐式表示训练时间长，这与 SLAM 的实时性要求相矛盾，而 3DGS 的显式表示却可能缺乏高级的纹理信息，不利于高精度地图的构建。Photo-SLAM<a href="#Photo-SLAM-paper"><sup>[1]</sup></a> 则是用 Coarse-to-Fine 的方式结合了显隐式表达的优势：一方面使用超原语和 3DGS 技术来获得粗糙的地图和定位，另一方面使用增量式的高斯金字塔网络来优化地图细节并学习场景的高级特征。而 Photo-SLAM 的 Method 正是围绕下面 b 图的五部分展开的。</p>
+<blockquote>
+<p>Photo-SLAM is a novel framework maintaining a hyper primitives map: Explicit geometric features for efficient localization and geometry mapping solved by factor gragh, and Implicit photometric features for photorealistic mapping solved by backprogating the photometric loss, thus achieving high-quality mapping without reliance on dense depth information.</p>
+</blockquote>
+<p><img alt="" src="../Photo-SLAM-motivation.png" style="display: block; margin: 0 auto;" width="70%" /></p>
+<h2 id="hyper-primitives-map">Hyper Primitives Map<a class="headerlink" href="#hyper-primitives-map" title="Permanent link">&para;</a></h2>
+<h2 id="localization-and-geometry-mapping">Localization and Geometry Mapping<a class="headerlink" href="#localization-and-geometry-mapping" title="Permanent link">&para;</a></h2>
+<div class="arithmatex">\[
+\{\mathbf{R},\mathbf{t}\}=\underset{\mathbf{R},\mathbf{t}}{\arg\min}\sum_{i\in\mathcal{X}}\rho\left(\|\mathbf{p}_i-\pi(\mathbf{R}\mathbf{P}_i+\mathbf{t})\|_{\Sigma_g}^2\right)
+\]</div>
+<div class="arithmatex">\[
+\{\mathbf{P}_i,\mathbf{R}_l,\mathbf{t}_l|i\in\mathcal{P}_L,l\in\mathcal{K}_L\}=\underset{\mathbf{P}_i,\mathbf{R}_l,\mathbf{t}_l}{\arg\min}\sum_{\begin{array}{c}k\in\mathcal{K}\end{array}}\sum_{\begin{array}{c}j\in\mathcal{X}_k\end{array}}\rho(E(k,j))
+\]</div>
+<h2 id="photorealistic-mapping">Photorealistic Mapping<a class="headerlink" href="#photorealistic-mapping" title="Permanent link">&para;</a></h2>
+<div class="arithmatex">\[
+C(\mathbf{R},\mathbf{t})=\sum_{i\in \mathcal{N}}\mathbf{c}_i\alpha_i\prod_{j=1}^{i-1}(1-\alpha_i)
+\]</div>
+<div class="arithmatex">\[
+\mathcal{L}=(1-\lambda)\left|I_\mathrm{r}-I_\mathrm{gt}\right|_1+\lambda(1-\mathrm{SSIM}(I_\mathrm{r},I_\mathrm{gt}))
+\]</div>
+<p>Geometry-based Densification，3DGS 中其实也讲过自适应密度控制</p>
+<h2 id="gaussian-pyramid-based-learning">Gaussian-Pyramid-Based Learning<a class="headerlink" href="#gaussian-pyramid-based-learning" title="Permanent link">&para;</a></h2>
+<p><img alt="" src="../Gaussian-pyramid.png" style="display: block; margin: 0 auto;" width="55%" /></p>
+<h2 id="loop-closure">Loop Closure<a class="headerlink" href="#loop-closure" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>Loop Closure is crucial in SLAM because it helps address the problem of accumulated errors and drift that can occur during the localization and geometry mapping process. After detecting a closing loop, we can correct local keyframes and hyper primitives by similarity transformation. With corrected camera poses, the photorealistic mapping component can further get rid of the ghosting caused by odometry drifts and improve the mapping quality.</p>
+</blockquote>
+<p>总之，Photo-SLAM Tracking 的实时性完全基于 ORB-SLAM3 的特征点法，只是在这个基础上多存储了一些高斯椭球参数，而 Mapping 其实也并没有真正地做到 Real-Time。Photo-SLAM 将建图分成两部分 —— 基于几何信息的和像素级的，前者完全基于 ORB-SLAM3，后者则会有一些滞后性 —— 首先重建出一个“粗地图”，这部分只是把 3DGS 原来通过 SfM 得到的点替换成超原语点输入到原来的 3DGS 流程中，从而得到一个不包含高级信息和细节的地图；然后通过网络得到一个“细地图”，同时因为网络是用三层高斯金字塔结构，所以速度上不会太慢。某种意义上说，ORB-SLAM3 + 3DGS + 三层金字塔网络 = Photo-SLAM，前两者保证实时跟踪和建图，后者在不拖延时间的基础上尽可能地提升建图的精度<a href="#Photo-SLAM-explanation"><sup>[2]</sup></a>。</p>
+<p>&nbsp;</p>
+<div id="Photo-SLAM-paper"></div>
+<p>[1] <a href="https://huajianup.github.io/research/Photo-SLAM/">Huang H, Li L, Cheng H, et al. Photo-slam: Real-time simultaneous localization and photorealistic mapping for monocular stereo and rgb-d cameras[C]//Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2024: 21584-21593.</a></p>
+<div id="Photo-SLAM-explanation"></div>
+<p>[1] <a href="https://www.bilibili.com/video/BV185ere5EYC/?spm_id_from=333.337.search-card.all.click&amp;vd_source=df8c598e3026e471e571a5970603f409">Bilibili 上的这个视频给出了 Photo-SLAM 人性化的讲解，也是我这篇笔记的来源。</a></p>
 
 
 
@@ -614,7 +1037,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../gaussian-splatting/gaussian-splatting/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3D Gaussian Splatting">
+          <a href="../SplaTAM/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SplaTAM">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -624,20 +1047,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                3D Gaussian Splatting
+                SplaTAM
               </div>
             </div>
           </a>
         
         
           
-          <a href="../SplaTAM/" class="md-footer__link md-footer__link--next" aria-label="Next: SplaTAM：Splat, Track &amp; Map">
+          <a href="../GS-ICP-SLAM/" class="md-footer__link md-footer__link--next" aria-label="Next: GS-ICP SLAM">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                SplaTAM：Splat, Track & Map
+                GS-ICP SLAM
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -692,7 +1115,7 @@
       <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
     
-    <script id="__config" type="application/json">{"base": "../../../..", "features": ["announce.dismiss", "content.tooltips", "content.tabs.link", "content.code.copy", "content.code.select", "content.code.annotate", "search.suggest", "search.highlight", "search.share", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "navigation.footer", "navigation.prune", "toc.follow", "toc.integrate"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["announce.dismiss", "content.tooltips", "content.tabs.link", "content.code.copy", "content.code.select", "content.code.annotate", "search.suggest", "search.highlight", "search.share", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.indexes", "navigation.footer", "navigation.prune", "toc.integrate"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../../../assets/javascripts/bundle.60a45f97.min.js"></script>

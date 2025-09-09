@@ -397,4 +397,4 @@ python train.py -s data/truck/ -m data/truck/output
 [1] [Kerbl B, Kopanas G, Leimkühler T, et al. 3D Gaussian splatting for real-time radiance field rendering[J]. ACM Trans. Graph., 2023, 42(4): 139:1-139:14.](https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/)
 
 <div id="refer-anchor-2"></div>
-[2] [Bilibili上的这个视频给出了3DGS人性化的讲解，也是我这篇笔记的来源。](https://www.bilibili.com/video/BV1zi421v7Dr/?spm_id_from=333.337.search-card.all.click&vd_source=df8c598e3026e471e571a5970603f409)
+[2] [Bilibili 上的这个视频给出了 3DGS 人性化的讲解，也是我这篇笔记的来源。](https://www.bilibili.com/video/BV1zi421v7Dr/?spm_id_from=333.337.search-card.all.click&vd_source=df8c598e3026e471e571a5970603f409)

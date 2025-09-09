@@ -39,7 +39,7 @@ theme:
     - navigation.footer
     - navigation.prune    # Render only visible items
 
-    - toc.follow
+    # - toc.follow
     - toc.integrate  # Merge with sidebar
 
   palette:
@@ -51,13 +51,21 @@ theme:
 nav:
   - Summary:
     - SLAM Comparision: index.md
-    - 3DGS-SLAM Paper List: src/Home/paper-list.md
+    - 3DGS-SLAM Paper List: src/Summary/paper-list.md
   - 3DGS: 
     - 3D Gaussian Splatting: src/3DGS/gaussian-splatting/gaussian-splatting.md
-    - 3DGS-based Visual SLAM:
+    - Visual SLAM:
       - Gaussian Splatting SLAM: src/3DGS/3DGS-based_Visual_SLAM/Gaussian-Splatting-SLAM.md
-      - SplaTAM：Splat, Track & Map: src/3DGS/3DGS-based_Visual_SLAM/SplaTAM.md
-      - Photo-SLAM：Real-time: src/3DGS/3DGS-based_Visual_SLAM/Photo-SLAM.md
+      - SplaTAM: src/3DGS/3DGS-based_Visual_SLAM/SplaTAM.md
+      - Photo-SLAM: src/3DGS/3DGS-based_Visual_SLAM/Photo-SLAM.md
+      - GS-ICP SLAM: src/3DGS/3DGS-based_Visual_SLAM/GS-ICP-SLAM.md
+      - SEGS-SLAM: src/3DGS/3DGS-based_Visual_SLAM/SEGS-SLAM.md
+    - Dynamic SLAM:
+      - src/3DGS/3DGS-based_Dynamic_SLAM/4D-Gaussian-Splatting-SLAM.md
+    - Semantic SLAM:
+      - src/3DGS/3DGS-based_Semantic_SLAM/SGS-SLAM.md
+    - Outdoor SLAM:
+      - src/3DGS/3DGS-based_Outdoor_SLAM/OpenGS-SLAM.md
 
 
 markdown_extensions: 
