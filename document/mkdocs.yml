@@ -55,8 +55,8 @@ nav:
   - 3DGS: 
     - 3D Gaussian Splatting: src/3DGS/gaussian-splatting/gaussian-splatting.md
     - Visual SLAM:
-      - Gaussian Splatting SLAM: src/3DGS/3DGS-based_Visual_SLAM/Gaussian-Splatting-SLAM.md
       - SplaTAM: src/3DGS/3DGS-based_Visual_SLAM/SplaTAM.md
+      # - Gaussian Splatting SLAM: src/3DGS/3DGS-based_Visual_SLAM/Gaussian-Splatting-SLAM.md
       - Photo-SLAM: src/3DGS/3DGS-based_Visual_SLAM/Photo-SLAM.md
       - GS-ICP SLAM: src/3DGS/3DGS-based_Visual_SLAM/GS-ICP-SLAM.md
       - SEGS-SLAM: src/3DGS/3DGS-based_Visual_SLAM/SEGS-SLAM.md
@@ -65,7 +65,7 @@ nav:
     - Semantic SLAM:
       - src/3DGS/3DGS-based_Semantic_SLAM/SGS-SLAM.md
     - Outdoor SLAM:
-      - src/3DGS/3DGS-based_Outdoor_SLAM/OpenGS-SLAM.md
+      - src/3DGS/3DGS-based_Outdoor_SLAM/S3PO-GS-SLAM.md
 
 
 markdown_extensions: 

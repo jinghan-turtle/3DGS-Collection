@@ -1,6 +1,6 @@
 # 3D Gaussian Splatting
 
-3DGS[<sup>[1]</sup>](#3DGS-paper) 是基于 Splatting 和机器学习的三维重建方法。其中 Splat 是拟声词，意为“啪叽一声”：我们可以想象三维场景重建的输入是一些雪球，图片是一面砖墙，图像生成过程就是向墙面扔雪球的过程；每扔一个雪球，墙面上会留有印记，同时伴有啪叽一声，所以这个算法也被称为抛雪球法，翻译成“喷溅”也很有灵性。简单来说，splatting 的核心有三步：一是选择“雪球”，也就是说我要将它捏成一个什么形状的雪球；二是去抛掷雪球，将高斯椭球从 3D 投影到 2D，得到很多个印记；三是合成这些印记以形成最后的图像[<sup>[2]</sup>](#refer-anchor-2)。
+3DGS[<sup>[1]</sup>](#3DGS-paper) 是基于 Splatting 和机器学习的三维重建方法。其中 Splat 是拟声词，意为“啪叽一声”：我们可以想象三维场景重建的输入是一些雪球，图片是一面砖墙，图像生成过程就是向墙面扔雪球的过程；每扔一个雪球，墙面上会留有印记，并伴有啪叽一声，所以这个算法也被称为抛雪球法，翻译成“喷溅”也很有灵性。简单来说，splatting 的核心有三步：一是选择“雪球”，也就是说我要将它捏成一个什么形状的雪球；二是去抛掷雪球，将高斯椭球从 3D 投影到 2D，得到很多个印记；三是合成这些印记以形成最后的图像[<sup>[2]</sup>](#refer-anchor-2)。
 
 ## 捏雪球：用协方差控制椭球形状
 
@@ -19,7 +19,7 @@ $$
 y = Wx+b = RSx+b,\thinspace\thinspace x\sim N(\mu,\Sigma) \thinspace\thinspace\thinspace\thinspace\thinspace\Longrightarrow\thinspace\thinspace\thinspace\thinspace\thinspace y\sim N(W\mu+b, W\Sigma W^T) = N(W\mu+b, RS\Sigma S^TR^T)
 $$
 
-特别地，当 $\small x$ 服从标准正态分布时，仿射变换得到的协方差矩阵为 $\small RSS^TR^T$；反过来，给定协方差矩阵 $\small\Sigma$，我们可以通过特征值分解得到 $\small R$ 和 $\small S$，即 $\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T:=RSS^TR^T$ (由此可知存储一个协方差矩阵需要七个参数，即四元数和三个缩放参数)。下面的 `computeCov3D` 函数就在讲这个仿射变换，传入的三维向量 `scale` 即为上述公式中的 $\small x$， `cov3D` 则表示协方差矩阵，只是传入的四元数 `rot4` 使得代码多了一个计算旋转矩阵的过程。
+特别地，当 $\small x$ 服从标准正态分布时，仿射变换得到的协方差矩阵为 $\small RSS^TR^T$；反过来，给定协方差矩阵 $\small\Sigma$，我们可以通过特征分解得到 $\small R$ 和 $\small S$，即 $\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T:=RSS^TR^T$ (由此可知存储一个协方差矩阵需要七个参数，即四元数和三个缩放参数)。下面的 `computeCov3D` 函数就在讲这个仿射变换，传入的三维向量 `scale` 即为上述公式中的 $\small x$， `cov3D` 则表示协方差矩阵，只是传入的四元数 `rot4` 使得代码多了一个计算旋转矩阵的过程。
 
 //// collapse-code
 ```C++ hl_lines="26-29"
@@ -340,7 +340,7 @@ renderCUDA(
 
 ## 完整流程：机器学习与参数评估
 
-每个点膨胀成的三维高斯椭球参数包括中心点位置 $\small (x,y,z)$、协方差矩阵 $\small\Sigma=RS$、球谐函数系数矩阵和透明度 $\small\alpha$，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 $\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}$，如下述代码块所示（可以注意到代码中还计算了深度正则化损失来引导高斯椭球的几何分布与单目先验深度估计保持一致，而采用逆深度图则是因为近处的深度估计更为准确）。可以注意到的是，代码 `submodules` 模块下有 `simple-knn` 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免铺不满或者椭球过度重叠的情况。
+每个点膨胀成的三维高斯椭球参数包括中心点位置 $\small (x,y,z)$、协方差矩阵 $\small\Sigma=RS$、球谐函数系数矩阵和透明度 $\small\alpha$，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 $\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}$，如下述代码块所示（可以注意到代码中还计算了深度正则化损失来引导高斯椭球的几何分布与单目先验深度估计保持一致，而采用逆深度图则是因为近处的深度估计更为准确）。可以注意到的是，代码 `submodules` 模块下有 `simple-knn` 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免椭球铺不满场景或者过度重叠的情况。
 
 //// collapse-code
 ``` Python hl_lines="12"
@@ -379,17 +379,17 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
 
 ![](./overview_of_3DGS.png){ width=100% style="display: block; margin: 0 auto;" }
 
-## 代码运行： Ubuntu 20.04 & Cuda 11.8
+<!-- ## 代码运行： Ubuntu 20.04 & Cuda 11.8
 
 ```
 conda env create --file environment.yml && conda activate gaussian_splatting
 ```
 
-运行 `python train.py --help` 指令可以获得其支持的命令行参数，从终端输出 `--source_path SOURCE_PATH, -s SOURCE_PATH` 可以看出 `-s` 对应的是源数据路径
+运行 `python train.py --help` 指令可以获得其支持的命令行参数，从终端输出 `--source_path SOURCE_PATH, -s SOURCE_PATH` 可以看出 `-s` 对应的是源数据路径。
 
 ```
 python train.py -s data/truck/ -m data/truck/output
-```
+``` -->
 
 &nbsp;
 
