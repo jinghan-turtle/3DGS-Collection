@@ -99,6 +99,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#gs-icp-slam" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -464,8 +469,6 @@
       
         
       
-        
-      
     
     
       
@@ -503,27 +506,6 @@
             Visual SLAM
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../Gaussian-Splatting-SLAM/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Gaussian Splatting SLAM
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
             
               
                 
@@ -580,6 +562,19 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    GS-ICP SLAM
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -590,6 +585,43 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#g-icp-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      G-ICP Tracking
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gs-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      GS Mapping
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -767,7 +799,7 @@
         
   
   <span class="md-ellipsis">
-    SGS SLAM
+    SGS-SLAM
   </span>
   
 
@@ -843,11 +875,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../3DGS-based_Outdoor_SLAM/OpenGS-SLAM/" class="md-nav__link">
+      <a href="../../3DGS-based_Outdoor_SLAM/S3PO-GS-SLAM/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    OpenGS SLAM
+    S3PO-GS SLAM
   </span>
   
 
@@ -890,9 +922,15 @@
   
 
 
-  <h1>GS-ICP SLAM</h1>
-
-
+<h1 id="gs-icp-slam">GS-ICP SLAM<a class="headerlink" href="#gs-icp-slam" title="Permanent link">&para;</a></h1>
+<p>最开始的 SplaTAM、Gaussian Splatting SLAM 和 GS-SLAM 都采用了高斯椭球参数和相机位姿通过光度误差反向传播联合优化的紧耦合方式，但这显然限制了 SLAM 前端的跟踪速度；后续的 Photo-SLAM 则采用了 Tracking 线程复用 ORB-SLAM、Mapping 线程利用 3DGS 精细化建图的松耦合架构。GS-ICP SLAM<a href="#GS-ICP-SLAM-paper"><sup>[1]</sup></a> 则提出说 G-ICP（Generalized Iterative nearest Point，广义迭代最近点）算法可以直接将 3DGS 用于 Tracking 线程，如此既免去了紧耦合中光度误差反向优化的计算量，又不必如松耦合那般存储高斯地图以外的冗余特征。</p>
+<p><img alt="" src="../GS-ICP_SLAM_Overview.png" style="display: block; margin: 0 auto;" width="100%" /></p>
+<h2 id="g-icp-tracking">G-ICP Tracking<a class="headerlink" href="#g-icp-tracking" title="Permanent link">&para;</a></h2>
+<h2 id="gs-mapping">GS Mapping<a class="headerlink" href="#gs-mapping" title="Permanent link">&para;</a></h2>
+<p>Tracking 线程只需几个有代表性的关键帧即可，过多的关键帧反而会产生累积误差，但 Mapping 线程却要求较多的关键帧来支持稠密建图。为了解决这个冲突，GS-ICP SLAM 中 Tracking 和 Mapping 的关键帧并不是相同的，而是引入了 Mapping-Only Keyframe。</p>
+<p><img alt="" src="../keyframe-selection.png" style="display: block; margin: 0 auto;" width="90%" /></p>
+<div id="GS-ICP-SLAM-paper"></div>
+<p>[1] <a href="https://github.com/Lab-of-AI-and-Robotics/GS_ICP_SLAM">Ha S, Yeon J, Yu H. Rgbd gs-icp slam[C]//European Conference on Computer Vision. Cham: Springer Nature Switzerland, 2024: 180-197.</a></p>
 
 
 
