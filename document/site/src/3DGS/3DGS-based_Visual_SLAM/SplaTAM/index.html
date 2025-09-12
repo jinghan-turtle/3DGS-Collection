@@ -10,7 +10,7 @@
       
       
       
-        <link rel="prev" href="../Gaussian-Splatting-SLAM/">
+        <link rel="prev" href="../../gaussian-splatting/gaussian-splatting/">
       
       
         <link rel="next" href="../Photo-SLAM/">
@@ -469,8 +469,6 @@
       
         
       
-        
-      
     
     
       
@@ -508,27 +506,6 @@
             Visual SLAM
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../Gaussian-Splatting-SLAM/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Gaussian Splatting SLAM
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
             
               
                 
@@ -595,15 +572,6 @@
   <a href="#mapping高斯椭球致密化和地图更新" class="md-nav__link">
     <span class="md-ellipsis">
       Mapping：高斯椭球致密化和地图更新
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#代码运行ubuntu2004--cuda-116" class="md-nav__link">
-    <span class="md-ellipsis">
-      代码运行：Ubuntu20.04 &amp; Cuda 11.6
     </span>
   </a>
   
@@ -831,7 +799,7 @@
         
   
   <span class="md-ellipsis">
-    SGS SLAM
+    SGS-SLAM
   </span>
   
 
@@ -907,11 +875,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../3DGS-based_Outdoor_SLAM/OpenGS-SLAM/" class="md-nav__link">
+      <a href="../../3DGS-based_Outdoor_SLAM/S3PO-GS-SLAM/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    OpenGS SLAM
+    S3PO-GS SLAM
   </span>
   
 
@@ -961,7 +929,7 @@
 </blockquote>
 <ol>
 <li>
-<p>Fast rendering and rich optimization：可想而知，高斯泼溅的一大优势便是可以以高达 400 FPS 的速度渲染场景，而为了进一步提高 3DGS 的渲染速度，SplaTAM 去除了高斯椭球外观对观测视角的依赖及其各向异性，即将球谐函数系数矩阵简化为 RGB 值 <span class="arithmatex">\(\small c\in\mathbb{R}^3\)</span>，将协方差矩阵简化为球半径 <span class="arithmatex">\(\small r\)</span>，从而得到高斯椭球的简化表示 <span class="arithmatex">\(\small f(x)=o\exp(-||x-\mu||^2/2r^2)\)</span>，其中 <span class="arithmatex">\(\small\mu\in\mathbb{R}^3\)</span> 为高斯球均值，<span class="arithmatex">\(\small o\in[0,1]\)</span> 表示不透明度；同时，SplaTAM 仅在当前图像的可见范围内优化高斯椭球，类比像素 <span class="arithmatex">\(\small p=(u,v)\)</span> 的颜色渲染公式 <span class="arithmatex">\(\small C(p)=\sum_{i=1}^nc_if_i(p)\prod_{j=1}^{i-1}( 1-f_j(p) )\)</span>，SplaTAM 引入深度损失 <span class="arithmatex">\(\small D(p)=\sum_{i=1}^nd_if_i(p)\prod_{j=1}^{i-1}( 1-f_j(p) )\)</span> 和像素可见性 <span class="arithmatex">\(\small S(p)=\sum_{i=1}^nf_i(p)\prod_{j=1}^{i-1}( 1-f_j(p) )\)</span>，即该像素是否包含当前视图的信息以获得图像中待优化部分的轮廓。</p>
+<p>Fast rendering and rich optimization：可想而知，高斯泼溅的一大优势便是可以快速渲染场景，而为了进一步提高 3DGS 的渲染速度，SplaTAM 去除了椭球外观对观测视角的依赖及其各向异性，即将球谐函数系数矩阵简化为 RGB 值 <span class="arithmatex">\(\small c\in\mathbb{R}^3\)</span>，将协方差简化为球半径 <span class="arithmatex">\(\small r\)</span>，从而得到高斯椭球的简化表示 <span class="arithmatex">\(\small f(x)=o\exp(-||x-\mu||^2/2r^2)\)</span>，其中 <span class="arithmatex">\(\small\mu\in\mathbb{R}^3\)</span> 为高斯球均值，<span class="arithmatex">\(\small o\in[0,1]\)</span> 表示不透明度；同时，SplaTAM 仅在当前图像的可见范围内优化高斯椭球，类比像素 <span class="arithmatex">\(\small p=(u,v)\)</span> 的颜色渲染公式 <span class="arithmatex">\(\small C(p)=\sum_{i=1}^nc_if_i(p)\prod_{j=1}^{i-1}( 1-f_j(p) )\)</span>，SplaTAM 引入深度损失 <span class="arithmatex">\(\small D(p)=\sum_{i=1}^nd_if_i(p)\prod_{j=1}^{i-1}( 1-f_j(p) )\)</span> 和像素可见性 <span class="arithmatex">\(\small S(p)=\sum_{i=1}^nf_i(p)\prod_{j=1}^{i-1}( 1-f_j(p) )\)</span>，即该像素是否包含当前视图的信息以获得图像中待优化部分的轮廓。</p>
 </li>
 <li>
 <p>Maps with explicit spatial extent：SplaTAM 认为显式地图具有明确的空间范围，并可通过简单地添加高斯椭球来增加地图容量，允许在编辑部分场景时保持照片级的真实感渲染。正如由上面的像素可见性 <span class="arithmatex">\(\small S(p)\)</span> 定义的轮廓图，视图边界对于 SLAM 的相机跟踪显然是重要的，因为我们只希望将视图范围内的高斯椭球与新输入的 Ground Truth 图像作比较，而非像隐式建图那样每次都要优化全局的网络。</p>
@@ -974,7 +942,7 @@
 <p>SplaTAM 中对球谐函数系数矩阵的简化可能直接借鉴了 Gaussian Splatting SLAM 9.3. Effect of Spherical Harmonics (SH) 消融实验的结论，而深度损失的引入则与 Gaussian Splatting SLAM 3.3.1. Tracking 类似。</p>
 </blockquote>
 <h2 id="tracking可见轮廓内的颜色深度误差">Tracking：可见轮廓内的颜色深度误差<a class="headerlink" href="#tracking可见轮廓内的颜色深度误差" title="Permanent link">&para;</a></h2>
-<p>SplaTAM 使用匀速模型 <span class="arithmatex">\(\small E_{t+1} = E_t + (E_t-E_{t-1})\)</span> 初始化相机位姿，也就是说前两帧和当前帧的相机位姿态构成了等差数列，这一点在下面的 <code>initialize_camera_pose</code> 函数中是显而易见的。</p>
+<p>SplaTAM 使用匀速模型 <span class="arithmatex">\(\small E_{t+1} = E_t + (E_t-E_{t-1})\)</span> 初始化相机位姿，也就是说前两帧和当前帧的相机位姿构成了等差数列，这一点在下面的 <code>initialize_camera_pose</code> 函数中是显而易见的。</p>
 <div class="collapse-code"><input checked="checked" id="__collapse0" name="__collapse0" type="checkbox" /><div class="language-Python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="sd">&#39;&#39;&#39; scripts/spatam.py &#39;&#39;&#39;</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">rgbd_slam</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">...</span>
@@ -1294,15 +1262,19 @@
 <div class="code-footer"><label class="expand" for="__collapse4" tabindex="0" title="expand"></label><label class="collapse" for="__collapse4" tabindex="0" title="collapse"></label></div>
 </div>
 <p><img alt="" src="../SplaTAM-Overview.png" style="display: block; margin: 0 auto;" width="100%" /></p>
-<h2 id="代码运行ubuntu2004--cuda-116">代码运行：Ubuntu20.04 &amp; Cuda 11.6<a class="headerlink" href="#代码运行ubuntu2004--cuda-116" title="Permanent link">&para;</a></h2>
+<!-- ## 代码运行：Ubuntu20.04 & Cuda 11.6
+
 <div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>conda create -n splatam python=3.10
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>conda activate splatam
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>conda install -c &quot;nvidia/label/cuda-11.6.0&quot; cuda-toolkit
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.6 -c pytorch -c conda-forge
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>pip install -r requirements.txt
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>python scripts/splatam.py configs/tum/splatam.py
-</span></code></pre></div>
+
+```
+python scripts/splatam.py configs/tum/splatam.py
+``` -->
+
 <p>&nbsp;</p>
 <div id="SplaTAM-paper"></div>
 <p>[1] <a href="https://spla-tam.github.io/">Keetha N, Karhade J, Jatavallabhula K M, et al. Splatam: Splat track &amp; map 3d gaussians for dense rgb-d slam[C]//Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2024: 21357-21366.</a></p>
@@ -1337,7 +1309,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../Gaussian-Splatting-SLAM/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Gaussian Splatting SLAM">
+          <a href="../../gaussian-splatting/gaussian-splatting/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3D Gaussian Splatting">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1347,7 +1319,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Gaussian Splatting SLAM
+                3D Gaussian Splatting
               </div>
             </div>
           </a>

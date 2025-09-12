@@ -13,7 +13,7 @@
         <link rel="prev" href="../../../Summary/paper-list/">
       
       
-        <link rel="next" href="../../3DGS-based_Visual_SLAM/Gaussian-Splatting-SLAM/">
+        <link rel="next" href="../../3DGS-based_Visual_SLAM/SplaTAM/">
       
       
       <link rel="icon" href="../../../../assets/images/3D-Gaussians.png">
@@ -517,15 +517,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#代码运行-ubuntu-2004--cuda-118" class="md-nav__link">
-    <span class="md-ellipsis">
-      代码运行： Ubuntu 20.04 &amp; Cuda 11.8
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -543,8 +534,6 @@
   
     
     
-      
-        
       
         
       
@@ -593,27 +582,6 @@
             Visual SLAM
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../3DGS-based_Visual_SLAM/Gaussian-Splatting-SLAM/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Gaussian Splatting SLAM
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
             
               
                 
@@ -849,7 +817,7 @@
         
   
   <span class="md-ellipsis">
-    SGS SLAM
+    SGS-SLAM
   </span>
   
 
@@ -925,11 +893,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../3DGS-based_Outdoor_SLAM/OpenGS-SLAM/" class="md-nav__link">
+      <a href="../../3DGS-based_Outdoor_SLAM/S3PO-GS-SLAM/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    OpenGS SLAM
+    S3PO-GS SLAM
   </span>
   
 
@@ -973,7 +941,7 @@
 
 
 <h1 id="3d-gaussian-splatting">3D Gaussian Splatting<a class="headerlink" href="#3d-gaussian-splatting" title="Permanent link">&para;</a></h1>
-<p>3DGS<a href="#3DGS-paper"><sup>[1]</sup></a> 是基于 Splatting 和机器学习的三维重建方法。其中 Splat 是拟声词，意为“啪叽一声”：我们可以想象三维场景重建的输入是一些雪球，图片是一面砖墙，图像生成过程就是向墙面扔雪球的过程；每扔一个雪球，墙面上会留有印记，同时伴有啪叽一声，所以这个算法也被称为抛雪球法，翻译成“喷溅”也很有灵性。简单来说，splatting 的核心有三步：一是选择“雪球”，也就是说我要将它捏成一个什么形状的雪球；二是去抛掷雪球，将高斯椭球从 3D 投影到 2D，得到很多个印记；三是合成这些印记以形成最后的图像<a href="#refer-anchor-2"><sup>[2]</sup></a>。</p>
+<p>3DGS<a href="#3DGS-paper"><sup>[1]</sup></a> 是基于 Splatting 和机器学习的三维重建方法。其中 Splat 是拟声词，意为“啪叽一声”：我们可以想象三维场景重建的输入是一些雪球，图片是一面砖墙，图像生成过程就是向墙面扔雪球的过程；每扔一个雪球，墙面上会留有印记，并伴有啪叽一声，所以这个算法也被称为抛雪球法，翻译成“喷溅”也很有灵性。简单来说，splatting 的核心有三步：一是选择“雪球”，也就是说我要将它捏成一个什么形状的雪球；二是去抛掷雪球，将高斯椭球从 3D 投影到 2D，得到很多个印记；三是合成这些印记以形成最后的图像<a href="#refer-anchor-2"><sup>[2]</sup></a>。</p>
 <h2 id="捏雪球用协方差控制椭球形状">捏雪球：用协方差控制椭球形状<a class="headerlink" href="#捏雪球用协方差控制椭球形状" title="Permanent link">&para;</a></h2>
 <p>3DGS 的输入是 SfM 得到的稀疏点云，而由于点是没有体积的，我们首先需要将点膨胀成正方体、球体或者其他基础的三维几何形状。之所以选择高斯分布作为椭球，则是因为它良好的数学性质，比如高斯分布在仿射变换后依然是高斯分布，而沿着某个轴积分将高斯分布从 3D 降到 2D 后其依然服从高斯分布。高斯分布的数学描述如下：</p>
 <div class="arithmatex">\[
@@ -986,7 +954,7 @@ G(x;\mu,\Sigma) = \cfrac{1}{\sqrt{(2\pi)^k|\Sigma|}}\exp\bigg(-\frac{1}{2}(x-\mu
 \small
 y = Wx+b = RSx+b,\thinspace\thinspace x\sim N(\mu,\Sigma) \thinspace\thinspace\thinspace\thinspace\thinspace\Longrightarrow\thinspace\thinspace\thinspace\thinspace\thinspace y\sim N(W\mu+b, W\Sigma W^T) = N(W\mu+b, RS\Sigma S^TR^T)
 \]</div>
-<p>特别地，当 <span class="arithmatex">\(\small x\)</span> 服从标准正态分布时，仿射变换得到的协方差矩阵为 <span class="arithmatex">\(\small RSS^TR^T\)</span>；反过来，给定协方差矩阵 <span class="arithmatex">\(\small\Sigma\)</span>，我们可以通过特征值分解得到 <span class="arithmatex">\(\small R\)</span> 和 <span class="arithmatex">\(\small S\)</span>，即 <span class="arithmatex">\(\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T:=RSS^TR^T\)</span> (由此可知存储一个协方差矩阵需要七个参数，即四元数和三个缩放参数)。下面的 <code>computeCov3D</code> 函数就在讲这个仿射变换，传入的三维向量 <code>scale</code> 即为上述公式中的 <span class="arithmatex">\(\small x\)</span>， <code>cov3D</code> 则表示协方差矩阵，只是传入的四元数 <code>rot4</code> 使得代码多了一个计算旋转矩阵的过程。</p>
+<p>特别地，当 <span class="arithmatex">\(\small x\)</span> 服从标准正态分布时，仿射变换得到的协方差矩阵为 <span class="arithmatex">\(\small RSS^TR^T\)</span>；反过来，给定协方差矩阵 <span class="arithmatex">\(\small\Sigma\)</span>，我们可以通过特征分解得到 <span class="arithmatex">\(\small R\)</span> 和 <span class="arithmatex">\(\small S\)</span>，即 <span class="arithmatex">\(\small\Sigma=Q\wedge Q^T=Q\wedge^{1/2}\wedge^{1/2} Q^T:=RSS^TR^T\)</span> (由此可知存储一个协方差矩阵需要七个参数，即四元数和三个缩放参数)。下面的 <code>computeCov3D</code> 函数就在讲这个仿射变换，传入的三维向量 <code>scale</code> 即为上述公式中的 <span class="arithmatex">\(\small x\)</span>， <code>cov3D</code> 则表示协方差矩阵，只是传入的四元数 <code>rot4</code> 使得代码多了一个计算旋转矩阵的过程。</p>
 <div class="collapse-code"><input checked="checked" id="__collapse0" name="__collapse0" type="checkbox" /><div class="language-C++ highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cm">/* submodules/diff-gaussian-rasterization/cuda_rasterizer/forward.cu */</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1">// Forward method for converting scale and rotation properties of each Gaussian to </span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">// a 3D covariance matrix in world space. Also takes care of quaternion normalization.</span>
@@ -1290,7 +1258,7 @@ $$ -->
 <div class="code-footer"><label class="expand" for="__collapse3" tabindex="0" title="expand"></label><label class="collapse" for="__collapse3" tabindex="0" title="collapse"></label></div>
 </div>
 <h2 id="完整流程机器学习与参数评估">完整流程：机器学习与参数评估<a class="headerlink" href="#完整流程机器学习与参数评估" title="Permanent link">&para;</a></h2>
-<p>每个点膨胀成的三维高斯椭球参数包括中心点位置 <span class="arithmatex">\(\small (x,y,z)\)</span>、协方差矩阵 <span class="arithmatex">\(\small\Sigma=RS\)</span>、球谐函数系数矩阵和透明度 <span class="arithmatex">\(\small\alpha\)</span>，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 <span class="arithmatex">\(\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}\)</span>，如下述代码块所示（可以注意到代码中还计算了深度正则化损失来引导高斯椭球的几何分布与单目先验深度估计保持一致，而采用逆深度图则是因为近处的深度估计更为准确）。可以注意到的是，代码 <code>submodules</code> 模块下有 <code>simple-knn</code> 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免铺不满或者椭球过度重叠的情况。</p>
+<p>每个点膨胀成的三维高斯椭球参数包括中心点位置 <span class="arithmatex">\(\small (x,y,z)\)</span>、协方差矩阵 <span class="arithmatex">\(\small\Sigma=RS\)</span>、球谐函数系数矩阵和透明度 <span class="arithmatex">\(\small\alpha\)</span>，这些初始化的高斯椭球通过上述泼溅的过程得到二维图像，再将该图像和 Ground Truth 的误差反向传播来优化椭球参数，其中损失函数被定义为 <span class="arithmatex">\(\small\mathcal{L}=(1-\lambda)\mathcal{L}_1 + \lambda\mathcal{L}_{D-SSIM}\)</span>，如下述代码块所示（可以注意到代码中还计算了深度正则化损失来引导高斯椭球的几何分布与单目先验深度估计保持一致，而采用逆深度图则是因为近处的深度估计更为准确）。可以注意到的是，代码 <code>submodules</code> 模块下有 <code>simple-knn</code> 部分，这是因为高斯椭球被初始化为一个各向同性的球，其半径被设为三近邻距离的平均值以避免椭球铺不满场景或者过度重叠的情况。</p>
 <div class="collapse-code"><input checked="checked" id="__collapse4" name="__collapse4" type="checkbox" /><div class="language-Python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="sd">&#39;&#39;&#39; train.py &#39;&#39;&#39;</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">training</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">pipe</span><span class="p">,</span> <span class="n">testing_iterations</span><span class="p">,</span> <span class="n">saving_iterations</span><span class="p">,</span> <span class="n">checkpoint_iterations</span><span class="p">,</span> <span class="n">checkpoint</span><span class="p">,</span> <span class="n">debug_from</span><span class="p">):</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>	<span class="o">...</span>
@@ -1324,12 +1292,17 @@ $$ -->
 </div>
 <p>但是如果只对 colmap 生成的初始点云作优化的话，那么后续不管如何优化高斯椭球的数量都是不变的，这使得算法强依赖于 SfM 的初始化，所以 3DGS 提出了自适应密度控制与优化，即对透明的高斯分布作周期性滤除或者说剔除存在感太低的高斯椭球，同时，对于 under-reconstruction 的区域，克隆高斯并沿着梯度方向移动以覆盖几何体；对于 over-reconstruction 的区域则拆分高斯以更好地拟合细粒度细节。可以发现，机器学习的部分非常简单且不涉及深度学习的知识，3DGS 的难度主要在于对计算机图形学的理解和 GPU 的高性能编程。3DGS 这部分的伪代码见论文的附录 B. Optimization and Densification Algorithm。</p>
 <p><img alt="" src="../overview_of_3DGS.png" style="display: block; margin: 0 auto;" width="100%" /></p>
-<h2 id="代码运行-ubuntu-2004--cuda-118">代码运行： Ubuntu 20.04 &amp; Cuda 11.8<a class="headerlink" href="#代码运行-ubuntu-2004--cuda-118" title="Permanent link">&para;</a></h2>
+<!-- ## 代码运行： Ubuntu 20.04 & Cuda 11.8
+
 <div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>conda env create --file environment.yml &amp;&amp; conda activate gaussian_splatting
 </span></code></pre></div>
-<p>运行 <code>python train.py --help</code> 指令可以获得其支持的命令行参数，从终端输出 <code>--source_path SOURCE_PATH, -s SOURCE_PATH</code> 可以看出 <code>-s</code> 对应的是源数据路径</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>python train.py -s data/truck/ -m data/truck/output
-</span></code></pre></div>
+
+运行 `python train.py --help` 指令可以获得其支持的命令行参数，从终端输出 `--source_path SOURCE_PATH, -s SOURCE_PATH` 可以看出 `-s` 对应的是源数据路径。
+
+```
+python train.py -s data/truck/ -m data/truck/output
+``` -->
+
 <p>&nbsp;</p>
 <div id="3DGS-paper"></div>
 <p>[1] <a href="https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/">Kerbl B, Kopanas G, Leimkühler T, et al. 3D Gaussian splatting for real-time radiance field rendering[J]. ACM Trans. Graph., 2023, 42(4): 139:1-139:14.</a></p>
@@ -1383,13 +1356,13 @@ $$ -->
         
         
           
-          <a href="../../3DGS-based_Visual_SLAM/Gaussian-Splatting-SLAM/" class="md-footer__link md-footer__link--next" aria-label="Next: Gaussian Splatting SLAM">
+          <a href="../../3DGS-based_Visual_SLAM/SplaTAM/" class="md-footer__link md-footer__link--next" aria-label="Next: SplaTAM">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Gaussian Splatting SLAM
+                SplaTAM
               </div>
             </div>
             <div class="md-footer__button md-icon">

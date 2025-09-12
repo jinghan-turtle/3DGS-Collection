@@ -61,11 +61,14 @@ nav:
       - GS-ICP SLAM: src/3DGS/3DGS-based_Visual_SLAM/GS-ICP-SLAM.md
       - SEGS-SLAM: src/3DGS/3DGS-based_Visual_SLAM/SEGS-SLAM.md
     - Dynamic SLAM:
+      - src/3DGS/3DGS-based_Dynamic_SLAM/WildGS-SLAM.md
       - src/3DGS/3DGS-based_Dynamic_SLAM/4D-Gaussian-Splatting-SLAM.md
     - Semantic SLAM:
       - src/3DGS/3DGS-based_Semantic_SLAM/SGS-SLAM.md
     - Outdoor SLAM:
       - src/3DGS/3DGS-based_Outdoor_SLAM/S3PO-GS-SLAM.md
+    # - Lidar SLAM:
+    #   - src/3DGS/3DGS-based_Lidar_SLAM/Drivinggaussian.md
 
 
 markdown_extensions: 

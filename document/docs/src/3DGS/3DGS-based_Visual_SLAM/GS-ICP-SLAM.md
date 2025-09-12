@@ -14,5 +14,7 @@ Tracking 线程只需几个有代表性的关键帧即可，过多的关键帧�
 
 ![](./keyframe-selection.png){ width=90% style="display: block; margin: 0 auto;" }
 
+&nbsp;
+
 <div id="GS-ICP-SLAM-paper"></div>
 [1] [Ha S, Yeon J, Yu H. Rgbd gs-icp slam[C]//European Conference on Computer Vision. Cham: Springer Nature Switzerland, 2024: 180-197.](https://github.com/Lab-of-AI-and-Robotics/GS_ICP_SLAM)

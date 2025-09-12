@@ -19,7 +19,7 @@
     
     
       
-        <title>OpenGS SLAM - 3DGS based SLAM | Material Collection</title>
+        <title>S3PO-GS SLAM - 3DGS based SLAM | Material Collection</title>
       
     
     
@@ -97,6 +97,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#s3po-gs-slam" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -128,7 +133,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              OpenGS SLAM
+              S3PO-GS SLAM
             
           </span>
         </div>
@@ -460,8 +465,6 @@
       
         
       
-        
-      
     
     
       
@@ -501,27 +504,6 @@
             Visual SLAM
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../3DGS-based_Visual_SLAM/Gaussian-Splatting-SLAM/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Gaussian Splatting SLAM
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
             
               
                 
@@ -757,7 +739,7 @@
         
   
   <span class="md-ellipsis">
-    SGS SLAM
+    SGS-SLAM
   </span>
   
 
@@ -839,12 +821,14 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    OpenGS SLAM
+    S3PO-GS SLAM
   </span>
   
 
@@ -888,9 +872,9 @@
   
 
 
-  <h1>OpenGS SLAM</h1>
-
-
+<h1 id="s3po-gs-slam">S3PO-GS SLAM<a class="headerlink" href="#s3po-gs-slam" title="Permanent link">&para;</a></h1>
+<p><img alt="" src="../S3PO-GS-Results.png" style="display: block; margin: 0 auto;" width="100%" /></p>
+<p>一方面，之前一些支持 RGB 的 3DGS SLAM 通过光度误差的反向传播优化相机位姿，但是这种方法缺乏几何先验，且在室外环境中相机位姿的优化容易陷入局部最小值（lacks geometric priors）；另一方面，为了加强几何约束，Photo-SLAM 和 MGS-SLAM 分别引入独立的 ORB-SLAM3 跟踪模块和 Multi-View Stereo (MVS) network 预训练模型来补充几何信息，增强姿态估计的鲁棒性，但是这种策略需要保持外部模块和 3DGS 地图之间的比例对齐 —— 这在室内场景是容易做到的，但在旋转和位移较大的场景下，累积误差容易导致 SLAM 系统的尺度漂移，降低后续的姿态估计和地图重建质量（scale drift）。</p>
 
 
 
@@ -922,7 +906,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../3DGS-based_Semantic_SLAM/SGS-SLAM/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SGS SLAM">
+          <a href="../../3DGS-based_Semantic_SLAM/SGS-SLAM/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SGS-SLAM">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -932,7 +916,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                SGS SLAM
+                SGS-SLAM
               </div>
             </div>
           </a>
