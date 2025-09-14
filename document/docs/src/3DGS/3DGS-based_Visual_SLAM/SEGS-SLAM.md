@@ -20,17 +20,19 @@ $$
 
 ![](./SEPM-Visualization.png){ width=60% style="display: block; margin: 0 auto;" }
 
-## 外观理解：不同视角下的场景光影
+## 外观理解：不同视角的场景光影
 
 ![](./AfME.png){ width=70% style="display: block; margin: 0 auto;" }
 
-## 渲染细节：频率金字塔正则化损失
+## 渲染细节：频域金字塔正则化
 
 SEGS-SLAM 利用多尺度表示来学习场景中的高频细节。设 $\small s\in\mathcal{S}=\{s_0,s_1,\cdots,s_n\}$ 代表图像的缩放率，二维快速傅里叶变换得到的频谱为 $\small\mathcal{F}(I_r^s)(u,v), \mathcal{F}(I_g^s)(u,v)$，高频损失的定义如下。其中 $\small F_{hf,r}^s(u,v), F_{hf,g}^s(u,v)$ 为 $\small H_{hf}(u,v)$ 高通滤波得到的高频分量，$\small\mathcal{N}=HW$ 表示图像的大小，$\small\lambda_s$ 代表各层金字塔损失的权重。
 
 $$
 \small\mathcal{L}_{hf}=\sum_{s\in\mathcal{S}}\frac{1}{\mathcal{N}}\lambda_s\sum_{u,v}\left|F_{hf,r}^s(u,v)-F_{hf,g}^s(u,v)\right|, \thinspace\thinspace\thinspace\thinspace\thinspace\thinspace F_{hf,i}^s(u,v)=H_{hf}(u,v)\cdot\mathcal{F}(I_i^s)(u,v), \thinspace\thinspace\thinspace i\in\{r,g\}
 $$
+
+&nbsp;
 
 <div id="SEGS-SLAM-paper"></div>
 [1] [Wen, Tianci et al. “SEGS-SLAM: Structure-enhanced 3D Gaussian Splatting SLAM with Appearance Embedding.” (2025).](https://segs-slam.github.io/)

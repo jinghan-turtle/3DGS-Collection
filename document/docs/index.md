@@ -12,3 +12,7 @@ Github 上与 3DGS SLAM 相关的文档仓库见
 2. [3d gaussian splatting as new era: A survey](https://arxiv.org/pdf/2402.07181)
 3. [A Survey on 3D Gaussian Splatting](https://arxiv.org/pdf/2401.03890)
 4. [Beyond Implicit Representations: Exploring Gaussian Splatting for Next-Generation SLAM, Introduction and Review](https://ieeexplore.ieee.org/abstract/document/11143231)
+
+3DGS 加速的论文见
+
+LightGaussian: Unbounded 3D Gaussian Compression with 15x Reduction and 200+ FPS
