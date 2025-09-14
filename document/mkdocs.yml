@@ -49,9 +49,10 @@ theme:
 
 
 nav:
-  - Summary:
+  - Survey:
     - SLAM Comparision: index.md
-    - 3DGS-SLAM Paper List: src/Summary/paper-list.md
+    - Related Material: src/Survey/related-material.md
+    - 3DGS-SLAM Paper List: src/Survey/paper-list.md
   - 3DGS: 
     - 3D Gaussian Splatting: src/3DGS/gaussian-splatting/gaussian-splatting.md
     - Visual SLAM:
