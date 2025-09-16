@@ -105,9 +105,9 @@ body.special-layout .md-grid {
           WildGS-SLAM: Monocular Gaussian Splatting SLAM in Dynamic Environments
         </a>
       </td>
-      <td style="text-align: center;">  </td>
-      <td style="text-align: center;">  </td>
-      <td style="text-align: center;"></td>
+      <td style="text-align: center;"> Monocular RGB </td>
+      <td style="text-align: center;"> Depth & Uncertainty Guided DBA </td>
+      <td style="text-align: center;"> Uncertainty Prediction </td>
       <td style="text-align: center;">
         <a href="https://github.com/GradientSpaces/WildGS-SLAM" target="_blank" style="text-decoration: none;">
             <img src="https://img.shields.io/github/stars/GradientSpaces/WildGS-SLAM?style=for-the-badge&logo=github&logoColor=5865F2&color=E0F2FE&labelColor=FAFAFA" 

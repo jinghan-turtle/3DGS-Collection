@@ -391,6 +391,8 @@ conda env create --file environment.yml && conda activate gaussian_splatting
 python train.py -s data/truck/ -m data/truck/output
 ``` -->
 
+注：网上有反映说原版 3DGS 内置的查看器不太好用，可以考虑换用 [gaussian-splatting-lightning](https://github.com/yzslab/gaussian-splatting-lightning)。
+
 &nbsp;
 
 <div id="3DGS-paper"></div>

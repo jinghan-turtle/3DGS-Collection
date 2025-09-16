@@ -50,7 +50,7 @@ theme:
 
 nav:
   - Survey:
-    - SLAM Comparision: index.md
+    - Summary: index.md
     - Related Material: src/Survey/related-material.md
     - 3DGS-SLAM Paper List: src/Survey/paper-list.md
   - 3DGS: 
